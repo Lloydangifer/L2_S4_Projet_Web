@@ -41,8 +41,8 @@ define('APP_Z_SUBMIT', 'submit');
  */
 function fd_db_open() {
 
-	mysql_connect(APP_DB_URL, APP_DB_USER, APP_DB_PASS) or fd_db_err('Erreur Connexion serveur');
-	mysql_select_db(APP_DB_NOM) or fd_db_err('Erreur sélection BD');
+	mysqli_connect(APP_DB_URL, APP_DB_USER, APP_DB_PASS) or fd_db_err('Erreur Connexion serveur');
+	mysqli_select_db(APP_DB_NOM) or fd_db_err('Erreur sélection BD');
 }
 
 //____________________________________________________________________________
@@ -69,7 +69,7 @@ function fd_db_err($sql) {
 	// On affiche un message grossièrement mis en forme pour notre débugage
 	echo '<h2>Erreur ligne ', $appels[0]['line'],
 		' dans ', basename($appels[0]['file']), '</h2><hr>',
-		'<p><strong>Erreur mysql : </strong>', mysql_errno(), ' - ', mysql_error(),
+		'<p><strong>Erreur mysql : </strong>', mysqli_errno(), ' - ', mysqli_error(),
 		'<p><strong>Requ&ecirc;te SQL</strong><pre>', $sql, '</pre>';
 
 	// Si une seule entrès dans la pile => l'erreur est

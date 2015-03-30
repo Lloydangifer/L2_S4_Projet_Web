@@ -285,3 +285,83 @@ li {
 	display: block;
 	margin-left: 250px;	
 }
+
+/* ---------------------------------------------------------------
+	BLOC CALENDRIER
+--------------------------------------------------------------- */
+
+#calendrier {
+	background-color: #FFFFFF;
+	border: solid 2px #9ac5e7;
+	width: 235px;
+	text-align: center;
+	padding: 1px;
+	margin-bottom: 20px;
+}	
+
+#calendrier table {
+	width: auto;
+	margin: 10px auto;
+	border-collapse: collapse;	
+}
+
+#calendrier p {
+	background-color: #FFF;
+	text-align: center;
+	margin-bottom: 5px;
+	padding: 10px;		
+}
+
+#calendrier td a {
+	display: block;
+	width: 30px;
+	height: 22px; 	
+	padding-top: 7px;
+	color: #000000;	
+}
+
+#calendrier a:hover {
+	text-decoration: none;	
+}
+
+#calendrier a.lienJourHorsMois {
+	color: #999999;	
+}
+
+#calendrier th {
+	font-weight: bold;
+	height: 20px;
+}
+
+#calendrier td {
+	border: solid 1px #000000;
+	color: #000000;	
+} 
+
+.flechegauche {
+	float: left;
+	width: 20px;
+	height: 20px;	
+}
+
+.flechedroite {
+	float: right;
+	width: 20px;
+	height: 20px;	
+}
+
+.aligncenter {
+	text-align:center;	
+}
+
+.jourCourant {
+	background-color: #5555FF;	
+}
+
+.semaineCourante {
+	background-color: #9ac5e7;
+}
+
+.aujourdHui {
+	background-color: #FF5555;
+}

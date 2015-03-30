@@ -5,7 +5,8 @@
  * @author : Frederic Dadeau - frederic.dadeau@univ-fcomte.fr
  */
 
-include('bibli_24sur7_06.php');	// Inclusion de la bibliothéque
+include('bibli_24sur7.php');	// Inclusion de la bibliothéque
+//fd_verifie_session();
 
 fd_html_head('24sur7 | Agenda');
 
@@ -14,7 +15,11 @@ fd_html_bandeau(APP_PAGE_AGENDA);
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
 
-fd_html_calendrier(10, 2, 2015);
+$date=getdate();
+$day=$date["mday"];
+$month=$date["mon"];
+$year=$date["year"];
+fd_html_calendrier($day, $month, $year);
 
 echo		'<section id="categories">',
 				'Ici : bloc catégories pour afficher les catégories de rendez-vous',
