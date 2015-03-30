@@ -1,194 +1,136 @@
-<?php
-	/**
-	* TP 5 : Inscription d'un utilisateur
-	*
-	* @author : Frederic Dadeau (frederic.dadeau@univ-fcomte.fr)
-	*/
-
-	// Bufferisation des sorties
-	ob_start();
-
-	// Inclusion de la bibliothéque
-	include('bibli_24sur7.php');
-
-	//-----------------------------------------------------
-	// Détermination de la phase de traitement :
-	// 1er affichage ou soumission du formulaire
-	//-----------------------------------------------------
-	if (! isset($_POST['btnValider'])) {
-		// On n'est dans un premier affichage de la page.
-		// => On intialise les zones de saisie.
-		$nbErr = 0;
-		$_POST['txtNom'] = $_POST['txtMail'] = '';
-		$_POST['txtVerif'] = $_POST['txtPasse'] = '';
-		$_POST['selDate_a'] = 2000;
-		$_POST['selDate_m'] = $_POST['selDate_j'] = 1;
-
-	} else {
-		// On est dans la phase de soumission du formulaire :
-		// => vérification des valeurs reçues et création utilisateur.
-		// Si aucune erreur n'est détectée, fdl_add_utilisateur()
-		// redirige la page sur le script protégé.
-		$erreurs = fdl_add_utilisateur();
-		$nbErr = count($erreurs);
-	}
-
-	//-----------------------------------------------------
-	// Affichage de la page
-	//-----------------------------------------------------
-	fd_html_head('24sur7 | Inscription');
-vm_html_bandeau_sans_onglets();
-	echo '<p>Pour vous inscrire à <strong>24sur7</strong>, veuillez remplir le formulaire ci-dessous.</p>';
-
-	// Si il y a des erreurs on les affiche
-	if ($nbErr > 0) {
-		echo '<strong>Les erreurs suivantes ont été détectées</strong>';
-		for ($i = 0; $i < $nbErr; $i++) {
-			echo '<br>', $erreurs[$i];
+<?php include 'bibli_24sur7.php';
+	function  lsl_add_utilisateur(){
+		$errs = array();
+		//Erreur Nom Utilisateur
+		if(isset($_POST['txtNom'])){
+			$txtNom = trim($_POST['txtNom']);
 		}
-	}
-
-	// Affichage du formulaire
-	echo '<form method="POST" action="inscription.php">',
-			'<table border="1" cellpadding="4" cellspacing="0">',
-			fd_form_ligne('Nom',
-							fd_form_input(APP_Z_TEXT, 'txtNom', $_POST['txtNom'], 40)),
-			fd_form_ligne('Email',
-							fd_form_input(APP_Z_TEXT, 'txtMail', $_POST['txtMail'], 40)),
-			fd_form_ligne('Mot de passe',
-							fd_form_input(APP_Z_PASS, 'txtPasse', $_POST['txtPasse'], 20)),
-			fd_form_ligne('Retaper le mot de passe',
-							fd_form_input(APP_Z_PASS, 'txtVerif', $_POST['txtVerif'], 20)),
-			fd_form_ligne('',
-							fd_form_input(APP_Z_SUBMIT, 'btnValider', 'S\'inscrire')),
-        '</table></form>';
-	echo '<p>Déjà inscrit ? <a href="identification.php">Identifiez-vous !</a></p>';
-	echo '<p>Vous hésitez à vous inscrire ? Laissez-vous séduire par <a href="../html/presentation.html>une présentation</a> des possibilités de 24sur7</p>';
-
-fd_html_pied();
-	ob_end_flush();
-
-	//=================== FIN DU SCRIPT =============================
-
-	//_______________________________________________________________
-	//
-	//		FONCTIONS LOCALES
-	//_______________________________________________________________
-
-	/**
-	* Validation de la saisie et création d'un nouvel utilisateur.
-	*
-	* Les zones reçues du formulaires de saisie sont vérifiées. Si
-	* des erreurs sont détectées elles sont renvoyées sous la forme
-	* d'un tableau. Si il n'y a pas d'erreurs, un enregistrement est
-	* créé dans la table utilisateur, une session est ouverte et une
-	* redirection est effectuée.
-	*
-	* @global array		$_POST		zones de saisie du formulaire
-	*
-	* @return array 	Tableau des erreurs détectées
-	*/
-	function fdl_add_utilisateur() {
-		//-----------------------------------------------------
-		// Vérification des zones
-		//-----------------------------------------------------
-		$erreurs = array();
-
-		// Vérification du nom
-		$txtNom = trim($_POST['txtNom']);
-		$long = strlen($txtNom);
-		if ($long < 4
-		|| $long > 30)
-		{
-			$erreurs[] = 'Le nom doit avoir de 4 à 30 caractères';
+		else{
+			$txtNom = NULL;
 		}
+		$lenNom = strlen($txtNom);
+	
+		if ($txtNom==NULL){
+			$errs['txtNom'] = 'Le nom doit &ecirc;tre renseign&eacute;';
+		} elseif ($lenNom < 4 || $lenNom > 30) {
+			$errs['txtNom'] = 'Le nom doit avoir de 4 &agrave 30 caract&egraveres';
 
-		// Vérification du mail
-		$txtMail = trim($_POST['txtMail']);
-		if ($txtMail == '') {
-			$erreurs[] = 'L\'adresse mail est obligatoire';
-		} elseif (strpos($txtMail, '@') === FALSE
-				|| strpos($txtMail, '.') === FALSE)
-		{
-			$erreurs[] = 'L\'adresse mail n\'est pas valide';
-		} else {
-			// Vérification que le mail n'existe pas dans la BD
-			fd_db_open();
-
-			$mail = mysql_real_escape_string($txtMail);
-
-			$S = "SELECT	count(*)
-					FROM	utilisateur
-					WHERE	utiMail = '$mail'";
-
-			$R = mysql_query($S) or fd_db_err($S);
-
-			$D = mysql_fetch_row($R);
-
-			if ($D[0] > 0) {
-				$erreurs[] = 'Cette adresse mail est déjà inscrite.';
+		}
+		//Erreur Mail
+		if(isset($_POST['txtMail'])){
+			$txtMail = trim($_POST['txtMail']);
+		}
+		else{
+			$txtMail = NULL;
+		}
+		$carObl1 = '@';
+		$carObl2 = '.';
+		$pres1 = strpos($txtMail, $carObl1);
+		$pres2 = strpos($txtMail, $carObl2);
+		if ($txtMail==NULL){
+			$errs['txtMail'] = 'L\'adresse mail est obligatoire';
+		}
+		elseif ($pres1===FALSE||$pres2===FALSE){
+			$errs['txtMail'] = 'L\'adresse mail n\'est pas valide';
+		}
+		$ls_db_req=ls_db_connexion();
+		$sql="SELECT*
+		FROM utilisateur
+		WHERE utiMail='$txtMail'";
+		$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+		$num=mysqli_num_rows($result);
+		if($num!=0){ 	
+			$errs['txtMail'] = 'Cette adresse mail est d&eacutej&agrave inscrite';
+		}
+		//Erreur Mot de passe
+		if(isset($_POST['txtPasse'])){
+			$txtPass = trim($_POST['txtPasse']);
+		}
+		else{
+			$txtPass = NULL;
+		}
+		$lenPass = strlen($txtPass);
+		if ($txtPass==NULL){
+			$errs['txtPass'] = 'Le mot de passe est obligatoire';
+		} elseif ($lenPass < 4 || $lenPass > 20) {
+			$errs['txtPasse'] = 'Le mot de passe doit avoir de 4 &agrave 20 caract&egraveres';
+		}
+		//Erreur Vérification mot de passe
+		if(isset($_POST['txtVerif'])){
+			$txtVerif = trim($_POST['txtVerif']);
+		}
+		else{
+			$txtVerif = NULL;
+		}
+		$cmpPass = strcmp($txtPass,$txtVerif);
+		if ($cmpPass!==0){
+			$errs['txtVerif'] = 'Le mot de passe est diff&eacuterent dans les 2 zones';
+		}
+		//Ajout utilisateur
+		if(count($errs)==0){
+			$pass=md5($txtPass);
+			$date_j_act=date('j',time());
+			$date_m_act=date('n',time());
+			$date_a_act=date('Y',time());
+			if (strlen($date_m_act)==1){
+				$date_m_act='0'.$date_m_act;
 			}
-		}
-
-		// Vérification du mot de passe
-		$txtPasse = trim($_POST['txtPasse']);
-		$long = strlen($txtPasse);
-		if ($long < 4
-		|| $long > 20)
-		{
-			$erreurs[] = 'Le mot de passe doit avoir de 4 à 20 caractères';
-		}
-
-		$txtVerif = trim($_POST['txtVerif']);
-		if ($txtPasse != $txtVerif) {
-			$erreurs[] = 'Le mot de passe est différent dans les 2 zones';
-		}
-
-		// Vérification de la date
-		$selJour = (int) $_POST['selDate_j'];
-		$selMois = (int) $_POST['selDate_m'];
-		$selAnnee = (int) $_POST['selDate_a'];
-		if (! checkdate($selMois, $selJour, $selAnnee)) {
-			$erreurs[] = 'La date n\'est pas valide';
-		} else {
-			$amj = ($selAnnee * 10000) + ($selMois * 100) + $selJour;
-			if ( $amj != date('Ymd')) {
-				$erreurs[] = 'La date doit être celle du jour';
+			$date=$date_a_act.$date_m_act.$date_j_act;
+			$sqlAjout = "INSERT INTO utilisateur (utiNom, utiMail, utiPasse, utiDateInscription, utiJours, utiHeureMin, utiHeureMax)
+			VALUES('$txtNom', '$txtMail', '$pass', '$date', 127, 6, 22)";
+			$result=mysqli_query($ls_db_req,$sqlAjout) or fd_bd_erreur($ls_bd);
+			$sql="SELECT utiID
+			FROM utilisateur
+			WHERE utiMail='$txtMail'";
+			$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+			if($enr=mysqli_fetch_assoc($result)){		
+				session_start();
+				$_SESSION['nom']=$txtNom;
+				$_SESSION['id']=$enr['utiID'];
 			}
+			header('Location:./agenda.php');
+			exit();
 		}
-
-		// Si il y a des erreurs, la fonction renvoie le tableau d'erreurs
-		if (count($erreurs) > 0) {
-			return $erreurs;		// RETURN : des erreurs ont été détectées
-		}
-
-		//-----------------------------------------------------
-		// Insertion d'un nouvel utilisateur dans la base de données
-		//-----------------------------------------------------
-		$txtPasse = mysql_real_escape_string(md5($txtPasse));
-		$nom = mysql_real_escape_string($txtNom);
-		$txtMail = mysql_real_escape_string($txtMail);
-		$utiDateInscription = date('Ymd');
-
-		$S = "INSERT INTO utilisateur SET
-				utiNom = '$nom',
-				utiPasse = '$txtPasse',
-				utiMail = '$txtMail',
-				utiDateInscription = $utiDateInscription,
-				utiJours = 127,
-				utiHeureMin = 6,
-				utiHeureMax = 22";
-
-		$R = mysql_query($S) or fd_db_err($S);
-
-		//-----------------------------------------------------
-		// Ouverture de la session et redirection vers la page protégée
-		//-----------------------------------------------------
-		session_start();
-		$_SESSION['utiID'] = mysql_insert_id();
-		$_SESSION['utiNom'] = $txtNom;
-		header ('location: protegee.php');
-		exit();			// EXIT : le script est terminé
+		return $errs;
+	}	
+	ls_html_head('Application 24sur7|Inscription', '../styles/style.css');
+	ls_html_bandeau('none');
+	echo '<section id="bcContenu">';
+	if(!empty($_POST['btnValider'])){
+		$errs=lsl_add_utilisateur();
+		if (count($errs)!=0){
+			echo '<p><strong>Les erreurs suivantes ont &eacutet&eacute d&eacutetect&eacutees</strong><br>';
+			//Affichage erreur
+			foreach($errs as $nomZone=>$valeur ){
+				if (isset($errs['$nomZone'])){
+					echo $valeur;
+				}
+			echo $valeur,"<br>";
+			}	
+			echo '</p>';
+		}		
+	}else{
+		$_POST['txtNom']="";
+		$_POST['txtMail']="";
+		$_POST['txtPasse']="";
+		$_POST['txtVerif']="";
 	}
-
+	echo '<p>Pour vous inscrire &agrave; <strong>24sur7</strong>, veuillez remplir le formulaire ci-dessous.</p>
+		<section id="bcCentreInscription">
+		<form method="POST" action="../php/inscription.php">';
+		$zoneNom=ls_form_input(APP_Z_TEXT, 'txtNom',$_POST['txtNom'], '40');
+		$zoneMail=ls_form_input(APP_Z_TEXT, 'txtMail',$_POST['txtMail'],'40');
+		$zonePasse=ls_form_input(APP_Z_PASS, 'txtPasse',$_POST['txtPasse'],'20');
+		$zonePasseVerif=ls_form_input(APP_Z_PASS, 'txtVerif',$_POST['txtVerif'],'20');
+		$zoneBoutonVal=ls_form_input(APP_Z_SUBMIT, 'btnValider', 'S\'inscrire');
+		$zoneBoutonAnnul=ls_form_input(APP_Z_RESET, 'btnAnnuler', 'Annuler');
+		echo '<p class="zoneForm">Nom ',$zoneNom,'</br></p>
+		<p class="zoneForm">Email ',$zoneMail,'</br></p>
+		<p class="zoneForm">Mot de Passe ',$zonePasse,'</br></p>
+		<p class="zoneForm">Retapez le mot de passe ',$zonePasseVerif,'</br></p></section>
+		<p class="zoneForm">',$zoneBoutonVal,' ',$zoneBoutonAnnul,'</p></form>
+		<p>D&eacute;j&agrave; inscrit ? <a href="./identification.php">Identifiez-vous !</a></p>
+		<p>Vous h&eacute;sitez à vous inscrire ? Laissez-vous séduire par <a href="../html/presentation.html">une pr&eacute;sentaion</a> des possibilit&eacute;s de 24sur7</p>
+		</section>';
+	ls_html_pied();
 ?>
