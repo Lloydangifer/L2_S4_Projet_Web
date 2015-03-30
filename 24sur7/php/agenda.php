@@ -6,6 +6,7 @@
  */
 
 include('bibli_24sur7.php');	// Inclusion de la bibliothéque
+session_start();
 //fd_verifie_session();
 
 fd_html_head('24sur7 | Agenda');

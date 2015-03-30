@@ -1,10 +1,11 @@
 <?php
 /** @file
- * Page de déconnexion de l'appliation 24sur7
+ * Page de déconnexion de l'application 24sur7
  *
  * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
  *
  */
+include('bibli_24sur7.php');
 
 session_start();
 fd_verifie_session();
