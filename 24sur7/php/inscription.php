@@ -1,9 +1,11 @@
 <?php include 'bibli_24sur7.php';
 	function  lsl_add_utilisateur(){
 		$errs = array();
+		$ls_db_req=ls_db_connexion();
 		//Erreur Nom Utilisateur
 		if(isset($_POST['txtNom'])){
 			$txtNom = trim($_POST['txtNom']);
+			$txtNom = mysqli_real_escape_string($ls_db_req, $txtNom);
 		}
 		else{
 			$txtNom = NULL;
@@ -19,6 +21,7 @@
 		//Erreur Mail
 		if(isset($_POST['txtMail'])){
 			$txtMail = trim($_POST['txtMail']);
+			$txtMail = mysqli_real_escape_string($ls_db_req, $txtMail);
 		}
 		else{
 			$txtMail = NULL;
@@ -33,7 +36,6 @@
 		elseif ($pres1===FALSE||$pres2===FALSE){
 			$errs['txtMail'] = 'L\'adresse mail n\'est pas valide';
 		}
-		$ls_db_req=ls_db_connexion();
 		$sql="SELECT*
 		FROM utilisateur
 		WHERE utiMail='$txtMail'";
@@ -45,6 +47,7 @@
 		//Erreur Mot de passe
 		if(isset($_POST['txtPasse'])){
 			$txtPass = trim($_POST['txtPasse']);
+			$txtPass = mysqli_real_escape_string($ls_db_req, $txtPass);
 		}
 		else{
 			$txtPass = NULL;
@@ -58,6 +61,7 @@
 		//Erreur Vérification mot de passe
 		if(isset($_POST['txtVerif'])){
 			$txtVerif = trim($_POST['txtVerif']);
+			$txtVerif = mysqli_real_escape_string($ls_db_req, $txtVerif);
 		}
 		else{
 			$txtVerif = NULL;
@@ -83,11 +87,15 @@
 			FROM utilisateur
 			WHERE utiMail='$txtMail'";
 			$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
-			if($enr=mysqli_fetch_assoc($result)){		
+			if($enr=mysqli_fetch_assoc($result)){	
+				$ID=$enr['utiID'];
 				session_start();
 				$_SESSION['nom']=$txtNom;
-				$_SESSION['id']=$enr['utiID'];
+				$_SESSION['id']=$ID;
 			}
+			$sqlAjoutCat = "INSERT INTO categorie (catNom, catCouleurFond, catCouleurBordure, catIDUtilisateur, catPublic)
+			VALUES('D&eacute;faut', 'FFFFFF', '000000', '$ID', 0)";
+			$resultCat=mysqli_query($ls_db_req,$sqlAjoutCat) or fd_bd_erreur($ls_bd);
 			header('Location:./agenda.php');
 			exit();
 		}

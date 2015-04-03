@@ -148,6 +148,7 @@
 		$nb_jmois_prev=date("t", $jour_actuel_mprev);
 		$num_jour_mois=date('w',$prem_jmois);
 		$jour_actuel=date('j',time());
+		$semaine = date('W', mktime(0, 0, 0, $mois, $jour, $annee));
 		if ($num_jour_mois==0){
 			$num_jour_mois = 6;
 		} else {
@@ -172,9 +173,9 @@
 				}
 				for ($i=1; $i<=$nb_jmois; $i++){
 					if($nb_case%7==0){
-						if(($i<=date('j',time()))&&(($i+6)>=date('j',time()))){
+						if (date('W', mktime(0, 0, 0, $mois, $i + 1, $annee)) == $semaine) {
 							echo '</tr><tr class="semaineCourante">';
-						} else {
+						}else{
 							echo '</tr><tr>';
 						}
 					}
@@ -438,7 +439,8 @@ function ls_form_date($nom, $jour=0, $mois=0, $annee=0){
  */	
 function ls_verifie_session(){
 	if(empty($_SESSION['id'])){
-		echo 'Il  n\'y a aucun utilisateurs identifi&eacute';
+		echo 'Il  n\'y a aucun utilisateurs identifi&eacute</section>';
+		ls_html_pied();
 		header('refresh:3; url=./inscription.php');
 		exit();
 	}

@@ -1,48 +1,58 @@
 <?php include 'bibli_24sur7.php';
 function  lsl_login_utilisateur(){
+	$ls_db_req=ls_db_connexion();
 	$errs = array();
 		if(isset($_POST['txtMail'])){
 			$txtMail = trim($_POST['txtMail']);
+			$txtMail = mysqli_real_escape_string($ls_db_req, $txtMail);
 		}
 		else{
 			$txtMail = NULL;
 		}
 		if ($txtMail==NULL){
 			$errs['txtMail'] = 'L\'adresse mail est obligatoire';
-		}
-		if(isset($_POST['txtPasse'])){
-			$txtPass = trim($_POST['txtPasse']);
-		}
-		else{
-			$txtPass = NULL;
-		}
-		if ($txtPass==NULL){
-			$errs['txtPass'] = 'Le mot de passe est obligatoire';
-		}
-		$ls_db_req=ls_db_connexion();
-		$sql="SELECT*
-		FROM utilisateur
-		WHERE utiMail='$txtMail'";
-		$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
-		$num=mysqli_num_rows($result);
-		if($num==0){ 	
-			$errs['txtMail'] = 'Cette adresse mail n\'existe pas';
 		}else{
-			$pass=md5($txtPass);
-			if($enr=mysqli_fetch_assoc($result)){
-				$passUti=$enr['utiPasse'];
+			if(isset($_POST['txtPasse'])){
+				$txtPass = trim($_POST['txtPasse']);
+				$txtPass = mysqli_real_escape_string($ls_db_req, $txtPass);
 			}
-			if(strcmp($pass,$passUti)==0){
-				if($enr=mysqli_fetch_assoc($result)){		
-					session_start();
-					$_SESSION['nom']=$txtNom;
-					$_SESSION['id']=$enr['utiID'];
+			else{
+				$txtPass = NULL;
+			}
+			if ($txtPass==NULL){
+				$errs['txtPass'] = 'Le mot de passe est obligatoire';
+			}
+			$sql="SELECT*
+			FROM utilisateur
+			WHERE utiMail='$txtMail'";
+			$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+			$num=mysqli_num_rows($result);
+			if($num==0){ 	
+				$errs['txtMail'] = 'Cette adresse mail n\'existe pas';
+			}else{
+				$pass=md5($txtPass);
+				if($enr=mysqli_fetch_assoc($result)){
+					$passUti=$enr['utiPasse'];
 				}
+				if(strcmp($pass,$passUti)!=0){
+					$errs['badLogin'] = 'Mauvais mot de passe';
+				}
+			}
+		}
+		if(count($errs)==0){
+		$sql="SELECT *
+			FROM utilisateur
+			WHERE utiMail='$txtMail'";
+			$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+			if($enr=mysqli_fetch_assoc($result)){	
+				$ID=$enr['utiID'];
+				$nom=$enr['utiNom'];
+				session_start();
+				$_SESSION['nom']=$nom;
+				$_SESSION['id']=$ID;
+			}
 			header('Location:./agenda.php');
 			exit();
-			}else{
-				$errs['badLogin'] = 'Mauvais mot de passe/adresse mail';
-			}
 		}
 		return $errs;
 	}	
