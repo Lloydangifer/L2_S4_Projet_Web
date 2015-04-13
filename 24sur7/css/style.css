@@ -1,13 +1,10 @@
-/*
-__________________________________________________________________
-
+/* ---------------------------------------------------------------
 			RE-INITIALISATION DES TAGS HTML
 	Pour éviter les valeurs par défaut différentes suivant les 
 	navigateurs. Seuls les tags le plus	souvent utilisés et non 
 	dépréciés sont pris en compte.
 	Reset complet : http://meyerweb.com/eric/tools/css/reset/
-__________________________________________________________________
-*/
+--------------------------------------------------------------- */
 html, body, div, span, applet, iframe,
 h1, h2, h3, h4, h5, h6, p, pre,
 a, img, strong, dl, dt, dd, ol, ul, li,
@@ -27,153 +24,52 @@ body {
 	}	
 ol, ul {
 	list-style: none;
-	}   	
-/* 
-__________________________________________________________________
-
-				FEUILLE DE STYLES ORIGINALE
-__________________________________________________________________ 
-*/
-body {
-	font: 13px/1.4 Verdana, Arial, Sans-Serif;		
-  	color: #404040;
-	background: #9ac5e7 url(../images/fond.jpg) repeat;  	
 	}
-   
-#bcPage {
-	background-color: #EFF6FF;
-	border-left: 2px solid #8ABCFD;
-	border-right: 2px solid #8ABCFD;
-	margin: 0 auto;
-	padding: 10px;
-	width: 780px;
-	text-align: justify;
+table { 
+	border-collapse: collapse;
+	border-spacing: 0;
 	}
 	
-h1, h2, h3 {
-	font-weight: bold;
-	margin: 1em 0;
+/* ---------------------------------------------------------------
+	FEUILLE DE STYLE ORIGINALE	
+--------------------------------------------------------------- */
+html {
+	height: 100%
 	}
-
-h1 { font-size: 21px; }	
-h2 { 
-	font-size: 18px; 
-	border-bottom: 2px solid #FF9B37;
+	
+body {
+	font-family: Verdana, Arial, Sans-Serif;
+	font-size: 13px;  /*10pt;	*/
+  	color: #404040;
+	background: #9ac5e7 url(../images/fond.jpg);  	
 	}
-h3 {
-	font-size: 15px;
-	margin-left: 1em;
-	}
-
-p { margin: 1em 0 1em 2em; }
-
-strong { font-weight: bold; }
+	
+p {
+	padding: 10px 5px;	
+}
 
 a {
+	color: #8ABCFD;
 	text-decoration: none;
-	color: #3c96f1;
-	}
+}
 	
-a:hover { text-decoration: underline; }	
-
-.lienExterne {
-	background: url(../images/lien_externe.gif) no-repeat right;
-	padding-right: 20px;	
-	}
-
-ul {
-	margin: 1em 0 1em 5em;
-	}
-li {
-	background: url(../images/puce.png) no-repeat;	
-	padding-left: 16px;
+a:hover {
+	text-decoration: underline;
 }
-		
-#ulMenu {
-	margin: 0 0 2em 0;
-	}
-#ulMenu ul {
-	margin: 0 0 0 3em;
-	}
-#ulMenu li {
-	margin: 0.5em 0;
-	}
-			
-#bcUsers img {
-	height: 50px;
-	width: 50px;
-	margin: 0 14px;
-	}
 	
-#bcCompo {
-	position: relative;
-	width: 410px;
-	margin: 0 auto;
-	height: 250px;
-	}
-#imgReseau {
-	position: absolute;
-	height: 124px;
-	width: 167px;
-	left: 0;
-	top: 25px;
-	}
-#imgLecteur {
-	position: absolute;
-	height: 128px;
-	width: 103px;
-	left: 150px;
-	top: 120px;
-	}	
-#imgCalendrier {
-	position: absolute;
-	height: 120px;
-	width: 120px;
-	left: 265px;
-	top: 50px;
-	}
-#imgAgenda {
-	position: absolute;
-	height: 120px;
-	width: 120px;
-	left: 145px;
-	top: 0px;		
-	}
-#imgBandeau {
-	float: right;
-	margin-right: -58px;	
-	margin-left: 10px;
-	border: solid 2px #8ABCFD;
-	height: 315px;
-	width: 96px;
+strong {
+	font-weight: bold;
 }
 
-#imgUSB1 {
-	height: 117px;
-	width: 120px;
-	float: left;
-	margin-top: -15px;
-	margin-right: 5px;
-}		
-#imgUSB2 {
-	height: 117px;
-	width: 121px;
-	float: right;
-	margin-top: -15px;	
-	margin-left: 5px;
-}	
-#pied {
-	border-top: 2px solid #8ABCFD;
-	margin: 2em 0 0 0;
-	padding-top: 10px;
-	text-align: center;
+
+#bcPage {
+	margin: 10px auto;
+	width: 1030px;
 	position: relative;
-	left: -10px;
-	width: 800px;
 }
-.clear {
-	clear: both;	
-}
+
+
+	
 /* ---------------------------------------------------------------
 	BLOC ENTETE
 --------------------------------------------------------------- */
@@ -182,6 +78,7 @@ li {
 	height: 135px;
 	position: relative;
 }
+
 #bcLogo {
 	background: url(../images/logo.png) no-repeat;
 	width: 285px;
@@ -189,7 +86,9 @@ li {
 	position: absolute;
 	top: 10px;
 	left: 30px;
-}	
+}
+
+	
 #btnDeconnexion {
 	background: url(../images/deconnexion.png) no-repeat;
 	height: 36px;
@@ -197,12 +96,15 @@ li {
 	position: absolute;
 	right: 30px;
 	top: 10px;
-}	
+}
+	
+	
 #bcOnglets { 
 	position: absolute;
 	left: 321px;
 	top: 5px;
-}	
+}
+	
 #bcOnglets a,
 #bcOnglets h2 {
 	text-decoration: none; 
@@ -216,14 +118,18 @@ li {
 	margin-right: 1px;
 	padding-top: 7px;
 }
+
 #bcOnglets a:hover { 
 	color: #ff9b37; 
 }
+
 #bcOnglets h2 {
 	background: url(../images/onglet_on.png) no-repeat; 
 	color: #ff9b37;
 	height: 27px;
 }
+	
+
 	
 /* ---------------------------------------------------------------
 	BLOC PIED DE PAGE
@@ -233,7 +139,8 @@ li {
 	clear: both;
 	height: 156px;
 	background: transparent url(../images/pied.png) no-repeat;		
-}
+	}
+
 #bcPied a {
 	text-decoration: none; 
 	font: 14px Verdana;    
@@ -242,29 +149,37 @@ li {
 	background: transparent url(../images/fleche_pied.png) no-repeat;
 	padding-left: 22px;
 	height: 22px;
-}	
+	}
+	
 #apropos {	
 	left: 198px;
 	top: 55px;
-}		
+	}		
+
 #confident {	
 	left: 360px;
 	top: 75px;
-}	
+	}
+		
 #conditions {	
 	left: 598px;
 	top: 95px;
-}	
+	}
+	
 #bcPied a:hover {
 	text-decoration: underline;
 	color: #000; 
-	}	
+	}
+	
 #copyright {
 	font: 14px Verdana;    
 	position: absolute;	
 	left: 792px;
 	top: 55px;
 	}
+	
+
+
 /* ---------------------------------------------------------------
 	BLOCS DE CONTENU
 --------------------------------------------------------------- */
@@ -274,16 +189,44 @@ li {
 	background: url(../images/contenu.png) repeat-y;
 	min-height: 500px;
 	padding: 0px 10px;
+	text-align: center;
 }
+
+#bcContenuInscription{
+	position: relative;
+	margin: 0 auto 0 auto;
+	text-align:	right;
+}
+
+
 #bcGauche {
 	float: left;	
 	width: 250px;
 	margin: 10px 10px;
 }
+
 #bcCentre {
 	position: relative;
 	display: block;
 	margin-left: 250px;	
+}
+
+#bcCentreInscription {
+	position: relative;
+	display: block;
+	margin-left: 260px;
+	margin-right: auto;
+	width: 450px;
+	text-align: right;
+}
+
+#bcCentreIdentification {
+	position: relative;
+	display: block;
+	margin-left: 230px;
+	margin-right: auto;
+	width: 450px;
+	text-align: right;
 }
 
 /* ---------------------------------------------------------------
@@ -301,8 +244,7 @@ li {
 
 #calendrier table {
 	width: auto;
-	margin: 10px auto;
-	border-collapse: collapse;	
+	margin: 10px auto;	
 }
 
 #calendrier p {
@@ -364,4 +306,168 @@ li {
 
 .aujourdHui {
 	background-color: #FF5555;
+}
+
+
+/* ---------------------------------------------------------------
+	BLOC AFFICHAGE DES CATEGORIES
+--------------------------------------------------------------- */
+
+#categories {
+	background-color: #FFFFFF;
+	border: solid 2px #9ac5e7;
+	width: 235px;
+	padding: 1px 1px 10px 1px;
+}
+
+
+#categories h3 {
+	background-color: #9ac5e7;
+	padding: 10px;	
+	font-weight: bold;
+	font-size: 13px; 
+	text-align: center;
+}
+
+#categories p {
+	padding: 10px 10px 5px 10px;	
+}
+
+#categories ul {
+	margin-bottom: 10px;
+}
+	
+#categories li {
+	padding-top: 2px; 	
+}	
+
+.categorie {
+ 	float: left; 
+	margin: 0px 5px 0px 20px; 
+	width: 10px; 
+	height: 10px; 
+}							  				 
+
+.groupeA {
+	border: solid 2px #00DD00; 
+	background-color: #00FF00;
+}
+.groupeB {
+	border: solid 2px #DD0000; 
+	background-color: #FF0000;
+}
+.groupeC {
+	border: solid 2px #0000DD; 
+	background-color: #0000FF;
+}
+
+/* ---------------------------------------------------------------
+	RENDEZ-VOUS ET EVENEMENTS
+--------------------------------------------------------------- */
+
+.rendezvous {
+	display: block;
+	color: #000;
+	font-size: 11px; 
+	position: absolute; 
+    margin: 1px; 
+    padding: 2px 0px 0px 2px; 
+    color: #000000;
+    width: 104px; 							          
+}
+
+
+/* ---------------------------------------------------------------
+	AGENDA
+--------------------------------------------------------------- */
+#titreAgenda {
+	text-align: center;
+	width: 672px; 
+	margin: 0 auto; 
+	padding-left: 30px;
+}
+
+#agenda { 
+ 	position: relative;
+ 	margin: 0 auto 0px auto;
+ 	width: 746px;
+ 	height: 540px;
+ } 
+ 
+#agenda a { 
+ 	color: #FFFFFF; 
+ 	text-decoration: none;
+	display: block;
+	height: 40px; 
+	background-color: transparent;
+	border-bottom: dashed 1px #5555FF;	
+}
+
+#agenda a.case-heure-bas {
+	border-bottom: none;
+}
+
+#agenda a:hover { 
+	color: #FFFFFF; 
+	text-decoration: underline;
+	background-color: #9ac5e7;
+}
+
+#intersection { 
+	float: left; 
+	height: 15px; 
+	width: 30px; 
+}
+
+#col-heures { 
+	float: left;
+	width: 30px;
+}
+
+#col-heures div { 
+	height: 41px; 
+	font-size: 9px; 
+	right: 0px; 
+	padding-right: 1px;
+	text-align: right; 
+}
+
+.border-TRB {	
+	border-top: solid 2px #5555FF; 
+	border-right: solid 2px #5555FF; 
+	border-bottom: solid 2px #5555FF; 
+}
+ 
+.border-L { 
+	border-left: solid 2px #5555FF; 
+}
+
+.col-jour { 
+	margin-top: 1px; 
+	float: left; 
+	width: 112px; 
+}
+
+.case-jour { 
+	background-color: #5555FF;
+	float: left; 
+	width: 112px; 
+	height: 20px; 
+	padding-top: 2px;
+	text-align: center; 
+	color: #FFF;
+}
+
+.zoneForm{
+	padding: 3px 0 3px 0;
+}
+
+.tailleZoneSaisie{
+	width : 200px;
+}
+
+.tailleBouton{
+	color: #FFFFFF;
+	border-radius: 5px;
+	background-color: #FFA500;
 }
