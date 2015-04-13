@@ -21,9 +21,9 @@
  * Génère l'en-tête de page
  *
  * @param 	string $titre titre de la page
- * @param 	string $css chemin vers le fichier css(par défaut '../styles/style.css'). Si paramètre = '-' : pas de feuille de style.
+ * @param 	string $css chemin vers le fichier css(par défaut '../css/style.css'). Si paramètre = '-' : pas de feuille de style.
  */
-	function lsvm_html_head($titre, $css = '../styles/style.css'){
+	function lsvm_html_head($titre, $css = '../css/style.css'){
 		if ($css!='-'){
 				echo '<!DOCTYPE HTML>',
 			'<html>',
@@ -118,7 +118,7 @@
  * @param 	int $mois mois séléctionné (mois et année actuel si 0)
  * @param	int $annee année séléctionné (mois et année actuel si 0)
  */
-	function ls_html_calendrier($jour = 0, $mois = 0, $annee = 0 /*, $next = 0, $prev = 0*/ ){
+	function lsvm_html_calendrier($jour = 0, $mois = 0, $annee = 0 /*, $next = 0, $prev = 0*/ ){
 		if($annee<2012){
 			$jour=date('j',time());
 			$mois=date('n',time());
@@ -180,7 +180,7 @@
 							echo '</tr><tr>';
 						}
 					}
-					if(($i==$jour_actuel)&&($next==0)&&($prev==0)){
+					if(($i==$jour_actuel)/*&&($next==0)&&($prev==0)*/){
 						echo '<td class="aujourdHui"><a href="#">',$i,'</a></td>';
 					} else {
 						if($i==$jour){
@@ -285,12 +285,12 @@ function fd_bd_erreurExit($msg) {
  * @param   constante 'APP_BD_PASS' mot de passe de l'utilisateur
  */
 function lsvm_db_connexion(){
-		$ls_bd=mysqli_connect(APP_BD_URL,APP_BD_USER,APP_BD_PASS,APP_BD_NOM);
-	if ($ls_bd===FALSE){
-		fd_bd_erreur($ls_bd);
+		$lsvm_bd=mysqli_connect(APP_BD_URL,APP_BD_USER,APP_BD_PASS,APP_BD_NOM);
+	if ($lsvm_bd===FALSE){
+		fd_bd_erreur($lsvm_bd);
 	}
 	else{
-		return $ls_bd;
+		return $lsvm_bd;
 		}
 	}
 	
@@ -441,7 +441,7 @@ function lsvm_form_date($nom, $jour=0, $mois=0, $annee=0){
 function lsvm_verifie_session(){
 	if(empty($_SESSION['id'])){
 		echo 'Il  n\'y a aucun utilisateurs identifi&eacute</section>';
-		ls_html_pied();
+		lsvm_html_pied();
 		header('refresh:3; url=./identification.php');
 		exit();
 	}

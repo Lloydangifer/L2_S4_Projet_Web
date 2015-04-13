@@ -57,7 +57,7 @@ function  lsvml_login_utilisateur(){
 		}
 		return $errs;
 	}	
-	lsvm_html_head('Application 24sur7|Inscription', '../styles/style.css');
+	lsvm_html_head('Application 24sur7|Inscription', '../css/style.css');
 	lsvm_html_bandeau('none');
 	echo '<section id="bcContenu">';
 	if(!empty($_POST['btnValider'])){

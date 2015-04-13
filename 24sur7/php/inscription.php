@@ -2,7 +2,7 @@
 include('bibli_24sur7.php');
 	function  lsvml_add_utilisateur(){
 		$errs = array();
-		$lsvm_db_req=ls_db_connexion();
+		$lsvm_db_req=lsvm_db_connexion();
 		//Erreur Nom Utilisateur
 		if(isset($_POST['txtNom'])){
 			$txtNom = trim($_POST['txtNom']);
@@ -22,7 +22,7 @@ include('bibli_24sur7.php');
 		//Erreur Mail
 		if(isset($_POST['txtMail'])){
 			$txtMail = trim($_POST['txtMail']);
-			$txtMail = mysqli_real_escape_string($ls_db_req, $txtMail);
+			$txtMail = mysqli_real_escape_string($lsvm_db_req, $txtMail);
 		}
 		else{
 			$txtMail = NULL;
@@ -40,7 +40,7 @@ include('bibli_24sur7.php');
 		$sql="SELECT*
 		FROM utilisateur
 		WHERE utiMail='$txtMail'";
-		$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+		$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
 		$num=mysqli_num_rows($result);
 		if($num!=0){ 	
 			$errs['txtMail'] = 'Cette adresse mail est d&eacutej&agrave inscrite';
@@ -48,7 +48,7 @@ include('bibli_24sur7.php');
 		//Erreur Mot de passe
 		if(isset($_POST['txtPasse'])){
 			$txtPass = trim($_POST['txtPasse']);
-			$txtPass = mysqli_real_escape_string($ls_db_req, $txtPass);
+			$txtPass = mysqli_real_escape_string($lsvm_db_req, $txtPass);
 		}
 		else{
 			$txtPass = NULL;
@@ -62,7 +62,7 @@ include('bibli_24sur7.php');
 		//Erreur Vérification mot de passe
 		if(isset($_POST['txtVerif'])){
 			$txtVerif = trim($_POST['txtVerif']);
-			$txtVerif = mysqli_real_escape_string($ls_db_req, $txtVerif);
+			$txtVerif = mysqli_real_escape_string($lsvm_db_req, $txtVerif);
 		}
 		else{
 			$txtVerif = NULL;
@@ -83,11 +83,11 @@ include('bibli_24sur7.php');
 			$date=$date_a_act.$date_m_act.$date_j_act;
 			$sqlAjout = "INSERT INTO utilisateur (utiNom, utiMail, utiPasse, utiDateInscription, utiJours, utiHeureMin, utiHeureMax)
 			VALUES('$txtNom', '$txtMail', '$pass', '$date', 127, 6, 22)";
-			$result=mysqli_query($ls_db_req,$sqlAjout) or fd_bd_erreur($ls_bd);
+			$result=mysqli_query($lsvm_db_req,$sqlAjout) or fd_bd_erreur($lsvm_bd);
 			$sql="SELECT utiID
 			FROM utilisateur
 			WHERE utiMail='$txtMail'";
-			$result=mysqli_query($ls_db_req,$sql) or fd_bd_erreur($ls_bd);
+			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
 			if($enr=mysqli_fetch_assoc($result)){	
 				$ID=$enr['utiID'];
 				session_start();
@@ -96,14 +96,14 @@ include('bibli_24sur7.php');
 			}
 			$sqlAjoutCat = "INSERT INTO categorie (catNom, catCouleurFond, catCouleurBordure, catIDUtilisateur, catPublic)
 			VALUES('D&eacute;faut', 'FFFFFF', '000000', '$ID', 0)";
-			$resultCat=mysqli_query($ls_db_req,$sqlAjoutCat) or fd_bd_erreur($ls_bd);
+			$resultCat=mysqli_query($lsvm_db_req,$sqlAjoutCat) or fd_bd_erreur($lsvm_bd);
 			header('Location:./agenda.php');
 			exit();
 		}
 		return $errs;
 	}	
-	ls_html_head('Application 24sur7|Inscription', '../css/style.css');
-	ls_html_bandeau('none');
+	lsvm_html_head('Application 24sur7|Inscription', '../css/style.css');
+	lsvm_html_bandeau('none');
 	echo '<section id="bcContenu">';
 	if(!empty($_POST['btnValider'])){
 		$errs=lsl_add_utilisateur();
