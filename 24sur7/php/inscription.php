@@ -106,7 +106,7 @@ include('bibli_24sur7.php');
 	lsvm_html_bandeau('none');
 	echo '<section id="bcContenu">';
 	if(!empty($_POST['btnValider'])){
-		$errs=lsl_add_utilisateur();
+		$errs=lsvml_add_utilisateur();
 		if (count($errs)!=0){
 			echo '<p><strong>Les erreurs suivantes ont &eacutet&eacute d&eacutetect&eacutees</strong><br>';
 			//Affichage erreur
