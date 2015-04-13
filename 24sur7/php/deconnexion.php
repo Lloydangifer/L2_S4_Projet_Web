@@ -3,12 +3,13 @@
  * Page de déconnexion de l'application 24sur7
  *
  * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
+ * @author : Sammy Loudiyi - sammy.loudiyi@edu.univ-fcomte.fr
  *
  */
 include('bibli_24sur7.php');
 
 session_start();
-ls_verifie_session();
+lsvm_verifie_session();
 $_SESSION = array();
 session_destroy();
 header('refresh:3; url=./identification.php');

@@ -23,7 +23,7 @@
  * @param 	string $titre titre de la page
  * @param 	string $css chemin vers le fichier css(par défaut '../styles/style.css'). Si paramètre = '-' : pas de feuille de style.
  */
-	function ls_html_head($titre, $css = '../styles/style.css'){
+	function lsvm_html_head($titre, $css = '../styles/style.css'){
 		if ($css!='-'){
 				echo '<!DOCTYPE HTML>',
 			'<html>',
@@ -56,7 +56,7 @@
  *
  * @param 	constante $page constante indiquant l'onglet. Si 'null', pas d'onglet.
  */
-	function ls_html_bandeau($page){
+	function lsvm_html_bandeau($page){
 		echo '<header id="bcEntete">',		
 				'<div id="bcLogo"></div>',
 				'<nav id="bcOnglets">';
@@ -94,7 +94,7 @@
  * Génère le pied de page, pas de paramètre
  *
  */
-	function ls_html_pied(){
+	function lsvm_html_pied(){
 		echo '</body>
 		<footer id="bcPied">',
 				'<a id="apropos" href="apropos.php">A propos</a>',
@@ -284,7 +284,7 @@ function fd_bd_erreurExit($msg) {
  * @param   constante 'APP_BD_USER' login de l'utilisateur
  * @param   constante 'APP_BD_PASS' mot de passe de l'utilisateur
  */
-function ls_db_connexion(){
+function lsvm_db_connexion(){
 		$ls_bd=mysqli_connect(APP_BD_URL,APP_BD_USER,APP_BD_PASS,APP_BD_NOM);
 	if ($ls_bd===FALSE){
 		fd_bd_erreur($ls_bd);
@@ -305,7 +305,7 @@ function ls_db_connexion(){
  * @param int $mois Mois (chiffré) de la date
  * @param string $mois_nom_bd conversion du mois chiffré en chaîne de caractère
  */
-function ls_date_claire($amj){
+function lsvm_date_claire($amj){
 		$jour=substr($amj,6,2);
 		$annee=substr($amj,0,4);
 		$mois=substr($amj,4,2);
@@ -323,7 +323,7 @@ function ls_date_claire($amj){
  * @param int $heure Heure
  * @param int $minute Minute
  */
-function ls_heure_claire($h){
+function lsvm_heure_claire($h){
 		$leng=strlen($h);
 		if ($leng==4){
 			$heure=substr($h,0,2);
@@ -349,7 +349,7 @@ function ls_heure_claire($h){
  * @param string $gauche Libéllé de la zone de saisie ou de séléction
  * @param string $droite Code html de la zone de saisie ou de séléction
  */
-function ls_form_ligne($gauche, $droite){
+function lsvm_form_ligne($gauche, $droite){
 	echo '<tr><td>',$gauche,'</td><td>',$droite,'</td></tr>';
 }	
 
@@ -366,7 +366,7 @@ function ls_form_ligne($gauche, $droite){
  * @param string $value Valeur de la zone
  * @param int $size Taille de la zone 
  */
-function ls_form_input($type, $name, $value, $size=0){
+function lsvm_form_input($type, $name, $value, $size=0){
 	if ($type==APP_Z_SUBMIT||$type==APP_Z_RESET){
 		$input = '<input class="tailleBouton" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
 		return $input;
@@ -387,7 +387,7 @@ function ls_form_input($type, $name, $value, $size=0){
  * @param int $mois Mois séléctionné par défaut (si valeur à 0, mois actuel)
  * @param int $annee Année séléctionné par défaut (si valeur à 0, année actuel)
  */	
-function ls_form_date($nom, $jour=0, $mois=0, $annee=0){
+function lsvm_form_date($nom, $jour=0, $mois=0, $annee=0){
 	if ($jour==0){
 		$jour=date('j',time());
 	}
@@ -438,7 +438,7 @@ function ls_form_date($nom, $jour=0, $mois=0, $annee=0){
  *
  * Vérifie si une session est ouverte, et renvoie vers inscription.php si ce n'est pas le cas. Pas de paramètre.
  */	
-function ls_verifie_session(){
+function lsvm_verifie_session(){
 	if(empty($_SESSION['id'])){
 		echo 'Il  n\'y a aucun utilisateurs identifi&eacute</section>';
 		ls_html_pied();

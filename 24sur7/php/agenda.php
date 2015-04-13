@@ -1,10 +1,10 @@
 <?php include('bibli_24sur7.php');
-ls_html_head('24sur7 | Agenda');
-ls_html_bandeau(APP_PAGE_AGENDA);
+lsvm_html_head('24sur7 | Agenda');
+lsvm_html_bandeau(APP_PAGE_AGENDA);
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
 session_start();
-ls_verifie_session();
+lsvm_verifie_session();
 $date=getdate();
 $day=$date["mday"];
 $month=$date["mon"];
@@ -21,7 +21,7 @@ if((isset($_GET['next'])&&($_GET['next']==1))){
 			$prev=0;
 			$next=0;
 		}*/
-ls_html_calendrier($day, $month, $year);
+lsvm_html_calendrier($day, $month, $year);
 echo		'<section id="categories">',
 				'Ici : bloc catégories pour afficher les catégories de rendez-vous',
 			'</section>',
@@ -30,5 +30,5 @@ echo		'<section id="categories">',
 			'Ici : bloc avec le détail des rendez-vous de la semaine du 9 au 15 février 2015',
 		'</section>',
 	'</section>';
-ls_html_pied();
+lsvm_html_pied();
 ?>

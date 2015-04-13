@@ -1,11 +1,12 @@
-<?php include 'bibli_24sur7.php';
-	function  lsl_add_utilisateur(){
+<?php 
+include('bibli_24sur7.php');
+	function  lsvml_add_utilisateur(){
 		$errs = array();
-		$ls_db_req=ls_db_connexion();
+		$lsvm_db_req=ls_db_connexion();
 		//Erreur Nom Utilisateur
 		if(isset($_POST['txtNom'])){
 			$txtNom = trim($_POST['txtNom']);
-			$txtNom = mysqli_real_escape_string($ls_db_req, $txtNom);
+			$txtNom = mysqli_real_escape_string($lsvm_db_req, $txtNom);
 		}
 		else{
 			$txtNom = NULL;
@@ -101,7 +102,7 @@
 		}
 		return $errs;
 	}	
-	ls_html_head('Application 24sur7|Inscription', '../styles/style.css');
+	ls_html_head('Application 24sur7|Inscription', '../css/style.css');
 	ls_html_bandeau('none');
 	echo '<section id="bcContenu">';
 	if(!empty($_POST['btnValider'])){
@@ -126,12 +127,12 @@
 	echo '<p>Pour vous inscrire &agrave; <strong>24sur7</strong>, veuillez remplir le formulaire ci-dessous.</p>
 		<section id="bcCentreInscription">
 		<form method="POST" action="../php/inscription.php">';
-		$zoneNom=ls_form_input(APP_Z_TEXT, 'txtNom',$_POST['txtNom'], '40');
-		$zoneMail=ls_form_input(APP_Z_TEXT, 'txtMail',$_POST['txtMail'],'40');
-		$zonePasse=ls_form_input(APP_Z_PASS, 'txtPasse',$_POST['txtPasse'],'20');
-		$zonePasseVerif=ls_form_input(APP_Z_PASS, 'txtVerif',$_POST['txtVerif'],'20');
-		$zoneBoutonVal=ls_form_input(APP_Z_SUBMIT, 'btnValider', 'S\'inscrire');
-		$zoneBoutonAnnul=ls_form_input(APP_Z_RESET, 'btnAnnuler', 'Annuler');
+		$zoneNom=lsvm_form_input(APP_Z_TEXT, 'txtNom',$_POST['txtNom'], '40');
+		$zoneMail=lsvm_form_input(APP_Z_TEXT, 'txtMail',$_POST['txtMail'],'40');
+		$zonePasse=lsvm_form_input(APP_Z_PASS, 'txtPasse',$_POST['txtPasse'],'20');
+		$zonePasseVerif=lsvm_form_input(APP_Z_PASS, 'txtVerif',$_POST['txtVerif'],'20');
+		$zoneBoutonVal=lsvm_form_input(APP_Z_SUBMIT, 'btnValider', 'S\'inscrire');
+		$zoneBoutonAnnul=lsvm_form_input(APP_Z_RESET, 'btnAnnuler', 'Annuler');
 		echo '<p class="zoneForm">Nom ',$zoneNom,'</br></p>
 		<p class="zoneForm">Email ',$zoneMail,'</br></p>
 		<p class="zoneForm">Mot de Passe ',$zonePasse,'</br></p>
@@ -140,5 +141,5 @@
 		<p>D&eacute;j&agrave; inscrit ? <a href="./identification.php">Identifiez-vous !</a></p>
 		<p>Vous h&eacute;sitez à vous inscrire ? Laissez-vous séduire par <a href="../html/presentation.html">une pr&eacute;sentaion</a> des possibilit&eacute;s de 24sur7</p>
 		</section>';
-	ls_html_pied();
+	lsvm_html_pied();
 ?>
