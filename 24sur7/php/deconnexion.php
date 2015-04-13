@@ -12,6 +12,6 @@ session_start();
 lsvm_verifie_session();
 $_SESSION = array();
 session_destroy();
-header('refresh:3; url=./identification.php');
+header('refresh:1; url=./identification.php');
 
 ?>

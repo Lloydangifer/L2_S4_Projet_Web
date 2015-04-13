@@ -84,7 +84,7 @@
 					}
 				}
 				echo'</nav>',
-				'<a href="#" id="btnDeconnexion" title="Se d&eacute;connecter"></a>',
+				'<a href="deconnexion.php" id="btnDeconnexion" title="Se d&eacute;connecter"></a>',
 			'</header>';
 	}
 
