@@ -1,6 +1,6 @@
 <?php include('bibli_24sur7.php');
-lsvm_html_head('24sur7 | Agenda');
-lsvm_html_bandeau(APP_PAGE_AGENDA);
+lsvm_html_head('24sur7 | Rendez-Vous');
+lsvm_html_bandeau('RDV');
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
 session_start();
