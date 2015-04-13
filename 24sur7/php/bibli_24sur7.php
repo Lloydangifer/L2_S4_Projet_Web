@@ -1,452 +1,449 @@
-<?php
-/** @file
- * Bibliothèque générale de fonctions
- *
- * @author : Frederic Dadeau - frederic.dadeau@univ-fcomte.fr
- */
-
-//____________________________________________________________________________
-//
-// Défintion des constantes de l'application
-//____________________________________________________________________________
-
-// Gestion des infos base de données
-define('APP_DB_URL', 'localhost');
-define('APP_DB_USER', 'u_24sur7');
-define('APP_DB_PASS', 'p_24sur7');
-define('APP_DB_NOM', '24sur7');
-
-define('APP_NOM_APPLICATION','24sur7');
-
-// Gestion des pages de l'application
-define('APP_PAGE_AGENDA', 'agenda.php');
-define('APP_PAGE_RECHERCHE', 'recherche.php');
-define('APP_PAGE_ABONNEMENTS', 'abonnements.php');
-define('APP_PAGE_PARAMETRES', 'parametres.php');
-
-// Définition du nom des mois. Comme une constante
-// ne peut être que scalaire, on utilise une chaîne
-// qu'on "explodera" en tableau pour l'utiliser
-define('APP_MOIS', 	'x,Janvier,Février,Mars,Avril,Mai,Juin,Juillet,Août,Septembre,Octobre,Novembre,Décembre');
-
-// Définition des types de zones de saisies
-define('APP_Z_TEXT', 'text');
-define('APP_Z_PASS', 'password');
-define('APP_Z_SUBMIT', 'submit');
-
-//____________________________________________________________________________
-
+<?php 
+//Constante Onglet Agenda
+	define('APP_PAGE_AGENDA', "Agenda.php");
+	define('APP_PAGE_RECHERCHE', "Recherche.php");
+	define('APP_PAGE_ABONNEMENTS', "Abonnements.php");
+	define('APP_PAGE_PARAMETRES', "Parametres.php");
+//Constante connexion Base de Données
+	define ('APP_BD_URL', "localhost");
+	define ('APP_BD_USER', "u_loudiyi");
+	define ('APP_BD_PASS', "p_loudiyi");
+	define ('APP_BD_NOM', "24sur7_loudiyi");
+//Constante type de zone de saisie
+	define ('APP_Z_TEXT', "text");
+	define ('APP_Z_PASS', "password");
+	define ('APP_Z_SUBMIT', "submit");
+	define ('APP_Z_RESET', "reset");
+	
 /**
- * Connexion à la base de données
- */
-function fd_db_open() {
-
-	mysqli_connect(APP_DB_URL, APP_DB_USER, APP_DB_PASS) or fd_db_err('Erreur Connexion serveur');
-	mysqli_select_db(APP_DB_NOM) or fd_db_err('Erreur sélection BD');
-}
-
-//____________________________________________________________________________
-
-/**
- * Traitement erreur mysql, affichage et exit.
+ * Fonction de l'en-tête de page
  *
- * @param string		$sql	Requête SQL ou message
- */
-function fd_db_err($sql) {
-	// On efface ce qui était déjà généré dans le buffer d'envoi au navigateur
-	ob_end_clean();
-
-	// On récupère la pile des appels de fonction
-	// http://www.php.net/manual/fr/function.debug-backtrace.php
-	$appels = debug_backtrace();
-	$iMax = count($appels);
-
-	// mise en forme de la requête. Dépend de la façon dont on
-	// écrit la requête (tabulation, etc ...). La ligne suivante
-	// peut être supprimée.
-	$sql = str_replace("\t", "  ", "\t\t$sql");
-
-	// On affiche un message grossièrement mis en forme pour notre débugage
-	echo '<h2>Erreur ligne ', $appels[0]['line'],
-		' dans ', basename($appels[0]['file']), '</h2><hr>',
-		'<p><strong>Erreur mysql : </strong>', mysqli_errno(), ' - ', mysqli_error(),
-		'<p><strong>Requ&ecirc;te SQL</strong><pre>', $sql, '</pre>';
-
-	// Si une seule entrès dans la pile => l'erreur est
-	// directement dans le script principal. On sort ici.
-	if ($iMax == 1) {
-		exit();			// Fin du script
-	}
-
-	// Affichage de la pile des appels
-	echo '<hr><p><strong>Pile des appels de fonctions</strong><ul>';
-
-	for ($i = $iMax - 1; $i > 0; $i--) {
-		echo '<li><strong>', $appels[$i]['function'],
-			'</strong> appel&eacute;e ligne <strong>', $appels[$i]['line'],
-			'</strong> dans <strong>', basename($appels[$i]['file']), '</strong>';
-	}
-
-	exit('</ul>');		// Fin du script
-}
-
-//____________________________________________________________________________
-
-/**
- * Génère le code HTML du début des pages.
+ * Génère l'en-tête de page
  *
- * @param string	$titre		Titre de la page
- * @param string	$css		url de la feuille de styles liée
+ * @param 	string $titre titre de la page
+ * @param 	string $css chemin vers le fichier css(par défaut '../styles/style.css'). Si paramètre = '-' : pas de feuille de style.
  */
-function fd_html_head($titre, $css = '../css/style.css') {
-	echo '<!DOCTYPE HTML>',
-		'<html>',
+	function ls_html_head($titre, $css = '../styles/style.css'){
+		if ($css!='-'){
+				echo '<!DOCTYPE HTML>',
+			'<html>',
 			'<head>',
 				'<meta charset="UTF-8">',
-				'<title>', $titre, '</title>',
-				'<link rel="stylesheet" href="', $css, '">',
+				'<title>', $titre ,'</title>',
+				'<link rel="stylesheet" href="', $css ,'" type="text/css">',
 				'<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">',
 			'</head>',
 			'<body>',
-				'<div id="bcPage">';
-}
-
-//____________________________________________________________________________
-
-/**
- * Génère le code HTML du bandeau des pages.
- *
- * @param string	$page		Constante APP_PAGE_xxx
- */
-function fd_html_bandeau($page) {
-	echo '<div id="bcEntete">',
-			'<div id="bcOnglets">',
-				($page == APP_PAGE_AGENDA) ? '<h2>Agenda</h2>' : '<a href="'.APP_PAGE_AGENDA.'">Agenda</a>',
-				($page == APP_PAGE_RECHERCHE) ? '<h2>Recherche</h2>' : '<a href="'.APP_PAGE_RECHERCHE.'">Recherche</a>',
-				($page == APP_PAGE_ABONNEMENTS) ? '<h2>Abonnements</h2>' : '<a href="'.APP_PAGE_ABONNEMENTS.'">Abonnements</a>',
-				($page == APP_PAGE_PARAMETRES) ? '<h2>Paramètres</h2>' : '<a href="'.APP_PAGE_PARAMETRES.'">Paramètres</a>',
-			'</div>',
-			'<div id="bcLogo"></div>',
-			'<a href="deconnexion.php" id="btnDeconnexion" title="Se déconnecter"></a>',
-		 '</div>';
-}
-//____________________________________________________________________________
-
-/**
- * Génère le code HTML du pied des pages.
- */
-function fd_html_pied() {
-	echo '<div id="bcPied">',
-			'<a id="apropos" href="#">A propos</a>',
-			'<a id="confident" href="#">Confidentialité</a>',
-			'<a id="conditions" href="#">Conditions</a>',
-			'<p id="copyright">24sur7 & Partners &copy; 2012</p>',
-		'</div>';
-
-	echo '</div>',	// fin du bloc bcPage
-		'</body></html>';
-}
-
-//____________________________________________________________________________
-
-/**
- * Génère le code HTML d'un calendrier.
- *
- * @param integer	$jour		Numéro du jour à afficher
- * @param integer	$mois		Numéro du mois à afficher
- * @param integer	$annee		Année à afficher
- */
-function fd_html_calendrier($jour = 0, $mois = 0, $annee = 0) {
-	list($JJ, $MM, $AA) = explode('-', date('j-n-Y'));
-
-	// Vérification des paramètres
-	$jour = (int) $jour;
-	($jour < 1 || $jour > 31) && $jour = $JJ;
-
-	$mois = (int) $mois;
-	($mois < 1 || $mois > 12) && $mois = $MM;
-
-	$annee = (int) $annee;
-	($annee < 2011) && $annee = $AA;
-
-	if (!checkdate($mois, $jour, $annee)) {
-		$jour = $JJ;
-		$mois = $MM;
-		$annee = $AA;
+			'<main id="bcPage">';
+		}
+		else{
+			echo '<!DOCTYPE HTML>',
+			'<html>',
+			'<head>',
+				'<meta charset="UTF-8">',
+				'<title>', $titre ,'</title>',
+				'<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">',
+			'</head>',
+			'<body>',
+			'<main id="bcPage">';
+		}
 	}
 
-	// Initialisations diverses
-	$aujourdHui = mktime(0, 0, 0, $MM, $JJ, $AA);
-	$jourDebut = mktime(0, 0, 0, $mois, 1, $annee);
-	$jourFin = mktime(0, 0, 0, ($mois + 1), 0, $annee);
-	$nbJoursMois = date('j', $jourFin);	// nombre de jours dans le mois
-
-	// Pour signaler le jour en cours dans l'affichage
-	$aujourdHui = ($aujourdHui < $jourDebut || $aujourdHui > $jourFin) ? 0 : $JJ;
-
-	// Pour signaler la semaine du jour demandé
-	$semaine = date('W', mktime(0, 0, 0, $mois, $jour, $annee));
-
-	// Quel est le nom du jour du début du mois (lundi, mardi, etc.)
-	$jourDebut = date('w', $jourDebut);
-	($jourDebut == 0) && $jourDebut = 7;
-
-	// Si le mois ne commence pas un lundi, il faut
-	// rechercher le nombre de jours du mois précédent
-	// pour faire l'affichage de la fin de ce mois
-	if ($jourDebut == 1) {
-		$nbJoursAvant = 0;
-	} else {
-		$nbJoursAvant = mktime(0, 0, 0, $mois, 0, $annee);
-		$nbJoursAvant = date('j', $nbJoursAvant);
+/**
+ * Fonction du bandeau de page
+ *
+ * Génère le bandeau de page, change l'onglet actif selon la constante rentrée
+ *
+ * @param 	constante $page constante indiquant l'onglet. Si 'null', pas d'onglet.
+ */
+	function ls_html_bandeau($page){
+		echo '<header id="bcEntete">',		
+				'<div id="bcLogo"></div>',
+				'<nav id="bcOnglets">';
+				if ($page!='none'){
+					if ($page==APP_PAGE_AGENDA){
+						echo'<h2>Agenda</h2>',
+						'<a href="Recherche.php">Recherche</a>',
+						'<a href="Abonnements.php">Abonnements</a>',
+						'<a href="Parametres.php">Param&egrave;tres</a>';
+					}elseif ($page==APP_PAGE_RECHERCHE){
+						echo'<a href="Agenda.php">Agenda</a>',
+						'<h2>Recherche</h2>',
+						'<a href="Abonnements.php">Abonnements</a>',
+						'<a href="Parametres.php">Param&egrave;tres</a>';
+					}elseif ($page==APP_PAGE_ABONNEMENTS){
+						echo'<a href="Agenda.php">Agenda</a>',
+						'<a href="Recherche.php">Recherche</a>',
+						'<h2>Abonnements</h2>',
+						'<a href="Recherche.php">Param&egrave;tres</a>';
+					}elseif ($page==APP_PAGE_PARAMETRES){
+						echo'<a href="Agenda.php">Agenda</a>',
+						'<a href="Recherche.php">Recherche</a>',
+						'<a href="Abonnements.php">Abonnements</a>',
+						'<h2>Param&egrave;tres</h2>';
+					}
+				}
+				echo'</nav>',
+				'<a href="#" id="btnDeconnexion" title="Se d&eacute;connecter"></a>',
+			'</header>';
 	}
 
-	// Affichage du titre du calendrier
-	echo '<div id="calendrier">',
+/**
+ * Fonction du pied de page
+ *
+ * Génère le pied de page, pas de paramètre
+ *
+ */
+	function ls_html_pied(){
+		echo '</body>
+		<footer id="bcPied">',
+				'<a id="apropos" href="apropos.php">A propos</a>',
+				'<a id="confident" href="confident.php">Confidentialit&eacute;</a>',
+				'<a id="conditions" href="condition.php">Conditions</a>',
+				'<p id="copyright">24sur7 &amp; Partners &copy; 2012</p>',
+			'</footer>';
+	}
+/**
+ * Fonction du calendrier
+ * 
+ * Vérifie si la date est correct 
+ * (sinon renvoie le mois et l'année
+ * actuelle avec le jour courant séléctionné),
+ * calcule le nombre de jour dans le mois
+ * et dans le mois précédant. Génère le calendrier
+ * en prenant en compte les jours du mois d'avant 
+ * et d'après.
+ *
+ * @param 	int $jour jour séléctionné (jour actuel si 0)
+ * @param 	int $mois mois séléctionné (mois et année actuel si 0)
+ * @param	int $annee année séléctionné (mois et année actuel si 0)
+ */
+	function ls_html_calendrier($jour = 0, $mois = 0, $annee = 0 /*, $next = 0, $prev = 0*/ ){
+		if($annee<2012){
+			$jour=date('j',time());
+			$mois=date('n',time());
+			$annee=date('Y',time());	
+		}
+		if(checkdate($mois,$jour,$annee)==FALSE){
+			if(($mois!=0)&&($annee!=0)){
+				$jour=date('j',time());
+				$mois=date('n',time());
+				$annee=date('Y',time());
+			} elseif($mois==0){
+				$mois=date('n',time());
+				$annee=date('Y',time());
+			} elseif($annee==0){
+				$annee=date('Y',time());
+				$annee=date('Y',time());
+			}
+		}
+		/*$mois=$mois+$next-$prev;*/
+		$jour_actuel = mktime(0, 0, 0, $mois, $jour, $annee);
+		$jour_actuel_mprev = mktime(0, 0, 0, $mois-1, $jour, $annee);
+		if ($jour>28){
+			$jour_actuel_mprev = mktime(0, 0, 0, $mois-1, $jour-5, $annee);
+		}
+		$prem_jmois = mktime(0, 0, 0, $mois, 1, $annee);
+		$mois_nom = array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+		$nb_jmois=date("t",	$jour_actuel);
+		$nb_jmois_prev=date("t", $jour_actuel_mprev);
+		$num_jour_mois=date('w',$prem_jmois);
+		$jour_actuel=date('j',time());
+		$semaine = date('W', mktime(0, 0, 0, $mois, $jour, $annee));
+		if ($num_jour_mois==0){
+			$num_jour_mois = 6;
+		} else {
+			$num_jour_mois=$num_jour_mois-1;
+		}
+		$last_jmois=mktime(0,0,0,$mois,$nb_jmois,$annee);
+		$last_jmois=date('w',$last_jmois);
+		$nb_case=0;
+		echo '<section id="calendrier">',
 			'<p>',
-				'<a href="#" class="flechegauche"><img src="../images/fleche_gauche.png"></a>',
-				fd_get_mois($mois), ' ', $annee,
-				'<a href="#" class="flechedroite"><img src="../images/fleche_droite.png"></a>',
-			'</p>';
-
-	// Affichage des jours du calendrier
-	echo '<table>',
-			'<tr>',
-				'<th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th>',
-			'</tr>';
-
-	// On vérifie si le jour demandé est dans la 1ere semaine affichée
-	if (date('W', mktime(0, 0, 0, $mois, 2 - $jourDebut, $annee)) == $semaine) {
-		echo '<tr class="semaineCourante">';
-	} else {
-		echo '<tr>';
+				'<a href="agenda.php?prev=1" class="flechegauche"><img src="../images/fleche_gauche.png" alt="picto fleche gauche"></a>',$mois_nom[$mois-1],' ',$annee,
+				'<a href="agenda.php?next=1" class="flechedroite"><img src="../images/fleche_droite.png" alt="picto fleche droite"></a>',
+			'</p>',
+			'<table>',
+				'<tr>',
+					'<th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th>',
+				'</tr>',
+				'<tr>';
+				for($i=$nb_jmois_prev-$num_jour_mois+1;$i<=$nb_jmois_prev;$i++){
+					echo '<td><a class="lienJourHorsMois" href="#">',$i,'</a></td>';
+					$nb_case=$nb_case+1;
+				}
+				for ($i=1; $i<=$nb_jmois; $i++){
+					if($nb_case%7==0){
+						if (date('W', mktime(0, 0, 0, $mois, $i + 1, $annee)) == $semaine) {
+							echo '</tr><tr class="semaineCourante">';
+						}else{
+							echo '</tr><tr>';
+						}
+					}
+					if(($i==$jour_actuel)&&($next==0)&&($prev==0)){
+						echo '<td class="aujourdHui"><a href="#">',$i,'</a></td>';
+					} else {
+						if($i==$jour){
+							echo '<td class="jourCourant"><a href="#">',$i,'</a></td>';
+						} else {
+							echo '<td><a href="#">',$i,'</a></td>';
+						}
+					}
+					$nb_case=$nb_case+1;
+				}
+				if ($last_jmois!=0){
+					for($i=1;$i<=7-$last_jmois;$i++){
+						echo '<td><a class="lienJourHorsMois" href="#">',$i,'</a></td>';
+					}
+				}			
+		echo '</table>',
+		'</section>';					
 	}
 
+	
+	//____________________________________________________________________________
+/**
+ * Traitement erreur mysql, affichage et exit.
+ *
+ * @param string	$sql	Requête SQL ou message
+ */
+function fd_bd_erreur($sql) {
+    $errNum = mysqli_errno($GLOBALS['bd']);
+    $errTxt = mysqli_error($GLOBALS['bd']);
+		
+    // Collecte des informations facilitant le debugage
+    $msg = '<h4>Erreur de requ&ecirc;te</h4>'
+        ."<pre><b>Erreur mysql :</b> $errNum"
+        ."<br> $errTxt"
+	        ."<br><br><b>Requ&ecirc;te :</b><br> $sql"
+        .'<br><br><b>Pile des appels de fonction</b>';
 
-	// Jours du mois précédent
-	for ($i = $case = 1; $i < $jourDebut; $i++, $case++) {
-		echo '<td><a class="lienJourHorsMois" href="#">',
-				($nbJoursAvant - $jourDebut + $i + 1),
-				'</a></td>';
+    // Récupération de la pile des appels de fonction
+    $msg .= '<table border="1" cellspacing="0" cellpadding="2">'
+                .'<tr><td>Fonction</td><td>Appel&eacute;e ligne</td>'
+                .'<td>Fichier</td></tr>';
+			
+    // http://www.php.net/manual/fr/function.debug-backtrace.php
+    $appels = debug_backtrace();
+    for ($i = 0, $iMax = count($appels); $i < $iMax; $i++) {
+        $msg .= '<tr align="center"><td>'
+                    .$appels[$i]['function'].'</td><td>'
+                    .$appels[$i]['line'].'</td><td>'
+                    .$appels[$i]['file'].'</td></tr>';
+    }
+	
+    $msg .= '</table></pre>';
+
+    fd_bd_erreurExit($msg);
+}
+//___________________________________________________________________
+/**
+ * Arrêt du script si erreur base de données.
+ * Affichage d'un message d'erreur si on est en phase de
+ * développement, sinon stockage dans un fichier log.
+ *
+ * @param string	$msg	Message affiché ou stocké.
+ */
+function fd_bd_erreurExit($msg) {
+    ob_end_clean();		// Supression de tout ce qui a pu être déja généré
+	
+    // Si on est en phase de développement, on affiche le message
+    if (APP_TEST) {
+        echo '<!DOCTYPE html><html><head><meta charset="ISO-8859-1"><title>',
+                'Erreur base de données</title></head><body>',
+                $msg,
+                '</body></html>';
+        exit();
+    }
+		
+    // Si on est en phase de production on stocke les
+    // informations de débuggage dans un fichier d'erreurs
+    // et on affiche un message sibyllin.
+    $buffer = date('d/m/Y H:i:s')."\n$msg\n";
+    error_log($buffer, 3, 'erreurs_bd.txt');
+	
+    // Génération d'une page spéciale erreur
+    fd_html_head('24sur7');
+		
+    echo '<h1>24sur7 est overbook&eacute;</h1>',
+        '<div id="bcDescription">',
+            '<h3 class="gauche">Merci de r&eacute;essayez dans un moment</h3>',
+        '</div>';
+	
+    fd_html_pied();
+    exit();
+}
+
+/**
+ * Fonction de connexion à la base de donnée
+ *
+ * Fait la connexion à la base de donnée et fait appel à la fonction d'erreur si il y a un problème
+ *
+ * @param 	constante 'APP_BD_NOM' Nom de la base de données
+ * @param   constante 'APP_BD_URL' Adresse de la base de données
+ * @param   constante 'APP_BD_USER' login de l'utilisateur
+ * @param   constante 'APP_BD_PASS' mot de passe de l'utilisateur
+ */
+function ls_db_connexion(){
+		$ls_bd=mysqli_connect(APP_BD_URL,APP_BD_USER,APP_BD_PASS,APP_BD_NOM);
+	if ($ls_bd===FALSE){
+		fd_bd_erreur($ls_bd);
 	}
-
-	// Jours du mois
-	for ($i = 1; $i <= $nbJoursMois; $i++, $case++) {
-		if ($i == $aujourdHui) {
-			echo '<td class="aujourdHui">';
-		} elseif ($i == $jour) {
-			echo '<td class="jourCourant">';
-		} else {
-			echo '<td>';
-		}
-
-		echo '<a href="#">', $i, '</a></td>';
-
-		if ($case < 7) {
-			continue;	// ==>> la semaine n'est pas terminée
-		}
-
-		// Quand une semaine est complétement affichée il faut
-		// créer une nouvelle rangée dans le tableau et signaler
-		// éventuellement la semaine du jour demandé.
-		echo '</tr>';
-
-		if ($i == $nbJoursMois) {
-			break;		// ==>> BREAK : l'affichage du calendrier est fini
-		}
-
-		$case = 0;
-		if (date('W', mktime(0, 0, 0, $mois, $i + 1, $annee)) == $semaine) {
-			echo '<tr class="semaineCourante">';
-		} else {
-			echo '<tr>';
+	else{
+		return $ls_bd;
 		}
 	}
-
-	// Premiers jours du mois suivant
-	if ($case > 1) {
-		for ($i = 1; $case < 8; $i++, $case++) {
-			echo '<td><a class="lienJourHorsMois" href="#">', $i, '</a></td>';
-		}
-
-		echo '</tr>';
+	
+/**
+ * Fonction de l'affichage de la date
+ *
+ * Génère l'affichage de la date suivant les informations prises sur la base de données
+ * Converti le mois chiffré en chaîne de caractère
+ *
+ * @param int $jour Jour de la date
+ * @param int $annee Annee de la date
+ * @param int $mois Mois (chiffré) de la date
+ * @param string $mois_nom_bd conversion du mois chiffré en chaîne de caractère
+ */
+function ls_date_claire($amj){
+		$jour=substr($amj,6,2);
+		$annee=substr($amj,0,4);
+		$mois=substr($amj,4,2);
+		$mois_nom_bd = array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+		echo $jour,' ',$mois_nom_bd[$mois-1],' ',$annee;
 	}
-
-	echo '</table></div>';
-}
-
-//_______________________________________________________________
-
+	
 /**
- * Renvoie le nom d'un mois.
+ * Fonction de l'affichage de l'heure
  *
- * @param integer	$numero		Numéro du mois (entre 1 et 12)
+ * Génère l'affichage de l'heure suivant les informations prises sur la base de données
+ * Gère l'affichage par rapport à la présence ou nom de minute, et si l'heure est comprise entre 0 et 9 ou 10 et 11. 
  *
- * @return string 	Nom du mois correspondant
+ * @param int $leng longueur de l'heure donnée par la base de données
+ * @param int $heure Heure
+ * @param int $minute Minute
  */
-function fd_get_mois($numero) {
-	$numero = (int) $numero;
-	($numero < 1 || $numero > 12) && $numero = 0;
-
-	$mois = explode(',', APP_MOIS);
-
-	return $mois[$numero];
-}
-
-//____________________________________________________________________________
-
+function ls_heure_claire($h){
+		$leng=strlen($h);
+		if ($leng==4){
+			$heure=substr($h,0,2);
+			$minute=substr($h,2,2);
+		}
+		else{
+			$heure=substr($h,0,1);
+			$minute=substr($h,1,2);
+		}
+		if ($minute!=00){
+			echo $heure,'h',$minute;
+		}
+		else{
+			echo $heure,'h';
+		}
+	}
+	
 /**
- * Formatte une date AAAAMMJJ en format lisible
+ * Fonction de l'affichage du formulaire
  *
- * @param integer	$amj		Date au format AAAAMMJJ
- *
- * @return string	Date formattée JJ nomMois AAAA
+ * Affiche les lignes du formulaire une par une, avec les cases gauches (libélés) et droites (zone de saisie ou de séléction) de chaque ligne de saisie
+ * 
+ * @param string $gauche Libéllé de la zone de saisie ou de séléction
+ * @param string $droite Code html de la zone de saisie ou de séléction
  */
-function fd_date_claire($amj) {
-	$a = (int) substr($amj, 0, 4);
-	$m = (int) substr($amj, 4, 2);
-	$m = fd_get_mois($m);
-	$j = (int) substr($amj, -2);
-
-	return "$j $m $a";
-}
-
-//____________________________________________________________________________
+function ls_form_ligne($gauche, $droite){
+	echo '<tr><td>',$gauche,'</td><td>',$droite,'</td></tr>';
+}	
 
 /**
-* Formatte une heure HHMM en format lisible
-*
-* @param integer	$h		Heure au format HHMM
-*
-* @return string	Heure formattée HH h SS
-*/
-function fd_heure_claire($h) {
-	$m = (int) substr($h, -2);
-	($m == 0) && $m = '';
-	$h = (int) ($h / 100);
-
-	return "{$h}h{$m}";
-}
-
-//____________________________________________________________________________
-
-/**
- * Redirige l'utilisateur sur une page
+ * Fonction de génération du code html de la zone de saisie
  *
- * @param string	$page		Page où rediriger
+ * Génère le code html de la zone de saisie en fonction des paramètres
+ * 
+ * @param constante APP_Z_TEXT Zone de texte 
+ * @param constante APP_Z_PASS Zone de mot de passe
+ * @param constante APP_Z_SUBMIT Bouton de soumission
+ * @param string $type Constante entrée
+ * @param string $nom Nom de la zone 
+ * @param string $value Valeur de la zone
+ * @param int $size Taille de la zone 
  */
-function fd_redirige($page) {
-	header("Location: $page");
-	exit();
+function ls_form_input($type, $name, $value, $size=0){
+	if ($type==APP_Z_SUBMIT||$type==APP_Z_RESET){
+		$input = '<input class="tailleBouton" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
+		return $input;
+	}else{
+		$input = '<input class="tailleZoneSaisie" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
+		return $input;
+	}
+	
 }
 
-
-//_______________________________________________________________
 /**
- * Véfication d'une session.
+ * Fonction de génération du code html de la zone de séléction de date
  *
- * Redirection sur la page d'inscription si la session n'est pas ouverte.
- */
-function fd_verifie_session() {
-	session_start();
-	if (! isset($_SESSION['utiID'])) {
-		session_destroy();
-		header('Location: inscription.php');
+ * Génère le code html de la zone de séléction de date en fonction des paramètres
+ * 
+ * @param string $nom Nom de la zone de séléction
+ * @param int $jour Jour séléctionné par défaut (si valeur à 0, jour actuel)
+ * @param int $mois Mois séléctionné par défaut (si valeur à 0, mois actuel)
+ * @param int $annee Année séléctionné par défaut (si valeur à 0, année actuel)
+ */	
+function ls_form_date($nom, $jour=0, $mois=0, $annee=0){
+	if ($jour==0){
+		$jour=date('j',time());
+	}
+	if ($mois==0){
+		$mois=date('n',time());
+	}
+	if ($annee==0){
+		$annee=date('Y',time());
+	}
+	$anAct=date('Y',time());
+	$anBorneMin=date('Y',time())-99;
+	$i=1;
+	$mois_nom = array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+	$date = '<select name="'.$nom.'_j">';
+		for ($i=1;$i<=31;$i++){
+			if($i==$jour){
+				$date = $date.'<option value=\''.$i.'\' selected>'.$i.'</option>';
+			}else{
+				$date = $date.'<option value=\''.$i.'\'>'.$i.'</option>';
+			}
+		}
+		$date = $date.'</select>';
+	$date = $date.'<select name="'.$nom.'_m">';
+		for ($i=1;$i<=12;$i++){
+			if($i==$mois){
+				$date = $date.'<option value=\''.$i.'\' selected>'.$mois_nom[$i-1].'</option>';
+			}else{
+				$date = $date.'<option value=\''.$i.'\'>'.$mois_nom[$i-1].'</option>';
+			}
+		}
+		$date = $date.'</select>';
+	$i=$anAct;
+	$date = $date.'<select name="'.$nom.'_a">';
+		while($i>$anBorneMin){
+			if($i==$annee){
+				$date = $date.'<option value=\''.$i.'\' selected>'.$i.'</option>';
+			}else{
+				$date = $date.'<option value=\''.$i.'\'>'.$i.'</option>';
+			}
+			$i--;
+		}
+		$date = $date.'</select>';
+	return $date;
+}
+
+/**
+ * Fonction de vérification de session
+ *
+ * Vérifie si une session est ouverte, et renvoie vers inscription.php si ce n'est pas le cas. Pas de paramètre.
+ */	
+function ls_verifie_session(){
+	if(empty($_SESSION['id'])){
+		echo 'Il  n\'y a aucun utilisateurs identifi&eacute</section>';
+		ls_html_pied();
+		header('refresh:3; url=./identification.php');
 		exit();
 	}
 }
-//_______________________________________________________________
-
-/**
- * Génére le code HTML d'une ligne de tableau d'un formulaire.
- *
- * Les formulaires sont mis en page avec un tableau : 1 ligne par
- * zone de saisie, avec dans la collone de gauche le lable et dans
- * la colonne de droite la zone de saisie.
- *
- * @param string		$gauche		Contenu de la colonne de gauche
- * @param string		$droite		Contenu de la colonne de droite
- *
- * @return string	Le code HTML de la ligne du tableau
- */
-function fd_form_ligne($gauche, $droite) {
-	$gauche = htmlentities($gauche, ENT_COMPAT, 'UTF-8');
-	return "<tr><td>{$gauche}</td><td>{$droite}</td></tr>";
-}
-
-//_______________________________________________________________
-
-/**
-* Génére le code d'une zone input de formulaire (type text, password ou button)
-*
-* @param string		$type	le type de l'input (constante FD_Z_xxx)
-* @param string		$name	Le nom de l'input
-* @param String		$value	La valeur par défaut
-* @param integer	$size	La taille de l'input
-*
-* @return string	Le code HTML de la zone de formulaire
-*/
-function fd_form_input($type, $name, $value, $size=0) {
-	$value = htmlentities($value, ENT_COMPAT, 'UTF-8');
-	$size = ($size == 0) ? '' : "size='{$size}'";
-	return "<input type='{$type}' name='{$name}' {$size} value=\"{$value}\">";
-}
-
-//_______________________________________________________________
-
-/**
-* Génére le code pour un ensemble de trois zones de sélection
-* représentant uen date : jours, mois et années
-*
-* @param string		$nom	Préfixe pour les noms des zones
-* @param integer	$jour 	Le jour sélectionné par défaut
-* @param integer	$mois 	Le mois sélectionné par défaut
-* @param integer	$annee	l'année sélectionnée par défaut
-*
-* @return string 	Le code HTML des 3 zones de liste
-*/
-function fd_form_date($nom, $jour = 0, $mois = 0, $annee = 0) {
-	list($AA, $MM, $JJ) = explode('-', date('Y-n-j'));
-	($jour == 0) && $jour = $JJ;
-	($mois == 0) && $mois = $MM;
-	($annee == 0) && $annee = $AA;
-
-	$H = "<select name='{$nom}_j'>";
-	for ($i = 1; $i < 32; $i++) {
-		$selected = ($i == $jour) ? ' selected' : '';
-		$H .= "<option value='{$i}'{$selected}>{$i}";
-	}
-	$H .= '</select>';
-
-	$libMois = explode(',', APP_MOIS);
-
-	$H .= "<select name='{$nom}_m'>";
-	for ($i = 1; $i < 13; $i++) {
-		$selected = ($i == $mois) ? ' selected' : '';
-		$H .= "<option value='{$i}'{$selected}>{$libMois[$i]}";
-	}
-	$H .= '</select>';
-
-	$H .= "<select name='{$nom}_a'>";
-	for ($i = $AA, $iMin = $AA - 99; $i >= $iMin; $i--) {
-		$selected = ($i == $annee) ? ' selected' : '';
-		$H .= "<option value='{$i}'{$selected}>{$i}";
-	}
-	$H .= '</select>';
-
-	return $H;
-}
-//________________________________________________________
-
-/**
- * Génère le code HTML du bandeau des pages sans onglets.
- *
- */
-function vm_html_bandeau_sans_onglets() {
-	echo '<div id="bcEntete">',
-			'<div id="bcLogo"></div>',
-			'<a href="deconnexion.php" id="btnDeconnexion" title="Se déconnecter"></a>',
-		 '</div>';
-}
-
 ?>

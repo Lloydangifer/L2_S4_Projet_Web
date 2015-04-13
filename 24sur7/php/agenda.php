@@ -9,7 +9,19 @@ $date=getdate();
 $day=$date["mday"];
 $month=$date["mon"];
 $year=$date["year"];
-ls_html_calendrier('10','04','2015');
+/*$next=0;
+$prev=0;
+if((isset($_GET['next'])&&($_GET['next']==1))){
+			$next=$next+1;
+			$prev=0;
+		}elseif((isset($_GET['prev'])&&($_GET['prev']==1))){
+			$prev=$prev+1;
+			$next=0;
+		}else{
+			$prev=0;
+			$next=0;
+		}*/
+ls_html_calendrier($day, $month, $year);
 echo		'<section id="categories">',
 				'Ici : bloc catégories pour afficher les catégories de rendez-vous',
 			'</section>',
