@@ -441,7 +441,7 @@ function lsvm_form_date($nom, $jour=0, $mois=0, $annee=0){
 function lsvm_verifie_session(){
 	if(empty($_SESSION['id'])){
 		echo 'Il  n\'y a aucun utilisateurs identifi&eacute</section>';
-		ls_html_pied();
+		lsvm_html_pied();
 		header('refresh:3; url=./identification.php');
 		exit();
 	}
