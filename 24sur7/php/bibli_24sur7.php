@@ -63,23 +63,23 @@
 				if ($page!='none'){
 					if ($page==APP_PAGE_AGENDA){
 						echo'<h2>Agenda</h2>',
-						'<a href="Recherche.php">Recherche</a>',
-						'<a href="Abonnements.php">Abonnements</a>',
-						'<a href="Parametres.php">Param&egrave;tres</a>';
+						'<a href="recherche.php">Recherche</a>',
+						'<a href="abonnements.php">Abonnements</a>',
+						'<a href="parametres.php">Param&egrave;tres</a>';
 					}elseif ($page==APP_PAGE_RECHERCHE){
-						echo'<a href="Agenda.php">Agenda</a>',
+						echo'<a href="agenda.php">Agenda</a>',
 						'<h2>Recherche</h2>',
-						'<a href="Abonnements.php">Abonnements</a>',
-						'<a href="Parametres.php">Param&egrave;tres</a>';
+						'<a href="abonnements.php">Abonnements</a>',
+						'<a href="parametres.php">Param&egrave;tres</a>';
 					}elseif ($page==APP_PAGE_ABONNEMENTS){
 						echo'<a href="Agenda.php">Agenda</a>',
-						'<a href="Recherche.php">Recherche</a>',
+						'<a href="recherche.php">Recherche</a>',
 						'<h2>Abonnements</h2>',
-						'<a href="Recherche.php">Param&egrave;tres</a>';
+						'<a href="parametres.php">Param&egrave;tres</a>';
 					}elseif ($page==APP_PAGE_PARAMETRES){
-						echo'<a href="Agenda.php">Agenda</a>',
-						'<a href="Recherche.php">Recherche</a>',
-						'<a href="Abonnements.php">Abonnements</a>',
+						echo'<a href="agenda.php">Agenda</a>',
+						'<a href="recherche.php">Recherche</a>',
+						'<a href="abonnements.php">Abonnements</a>',
 						'<h2>Param&egrave;tres</h2>';
 					}
 				}
