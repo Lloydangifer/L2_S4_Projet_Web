@@ -1,6 +1,17 @@
-<?php include('bibli_24sur7.php');
-lsvm_html_head('24sur7 | Agenda');
-lsvm_html_bandeau(APP_PAGE_AGENDA);
+<?php
+include('bibli_24sur7.php');
+function lsvml_nouvelle_saisie(){
+	echo   '<p>Nouvelle saisie</p>',
+        '<hr>',
+        '<p>Libellé:</p>',
+        '<p>Date:<select name="date"><option value=1>1</option><option value=2>2</option></select></p>',
+        '<p>Catégorie<p>',
+        '<p>Horaire Début</p>',
+        '<p>Horaire Fin</p>',
+        '<p>ou</p>';
+}
+lsvm_html_head('24sur7 | Rendez-Vous');
+lsvm_html_bandeau('RDV');
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
 session_start();
@@ -15,8 +26,8 @@ echo		'<section id="categories">',
 			'</section>',
 		'</aside>',
 		'<section id="bcCentre">',
-			'Ici : bloc avec le détail des rendez-vous de la semaine du 9 au 15 février 2015',
-		'</section>',
+    lsvml_nouvelle_saisie();
+	echo	'</section>',
 	'</section>';
 lsvm_html_pied();
 ?>
