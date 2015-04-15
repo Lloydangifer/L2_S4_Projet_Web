@@ -229,6 +229,15 @@ strong {
 	text-align: right;
 }
 
+#bcCentreRecherche {
+  position: relative;
+  display: block;
+  margin-left: 100px;
+  margin-right: auto;
+  width: 700px;
+  text-align: right;
+}
+
 /* ---------------------------------------------------------------
 	BLOC CALENDRIER
 --------------------------------------------------------------- */
@@ -465,6 +474,10 @@ strong {
 .tailleZoneSaisie{
 	width : 200px;
 }
+
+.tailleZoneSaisieR{
+	width : 300px;
+	}
 
 .tailleBouton{
 	color: #FFFFFF;

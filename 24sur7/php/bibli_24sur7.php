@@ -14,6 +14,7 @@
 	define ('APP_Z_PASS', "password");
 	define ('APP_Z_SUBMIT', "submit");
 	define ('APP_Z_RESET', "reset");
+	define ('APP_Z_SEARCH', "search");
 	
 /**
  * Fonction de l'en-tête de page
@@ -369,6 +370,9 @@ function lsvm_form_ligne($gauche, $droite){
 function lsvm_form_input($type, $name, $value, $size=0){
 	if ($type==APP_Z_SUBMIT||$type==APP_Z_RESET){
 		$input = '<input class="tailleBouton" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
+		return $input;
+	}elseif ($type==APP_Z_SEARCH){
+		$input = '<input class="tailleZoneSaisieR" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
 		return $input;
 	}else{
 		$input = '<input class="tailleZoneSaisie" type="'.$type.'" value="'.$value.'"name="'.$name.'" size="'.$size.'">';
