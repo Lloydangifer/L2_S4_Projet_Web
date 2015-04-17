@@ -51,14 +51,9 @@ echo		'<section id="categories">',
 				'Ici : bloc catégories pour afficher les catégories de rendez-vous',
 			'</section>',
 		'</aside>',
-		'<section id="bcCentre">',
-	if(!empty($sqlparam)){
-		lsvml_modifier_rendezvous();
-	}
-	else{
-		lsvml_nouveau_rendezvous();
-	}
-	echo	'</section>',
+		'<section id="bcCentre">'.
+			(!empty($sqlparam)) ? lsvml_modifier_rendezvous():lsvml_nouveau_rendezvous().
+		'</section>',
 	'</section>';
 lsvm_html_pied();
 ?>
