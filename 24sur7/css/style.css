@@ -384,8 +384,6 @@ strong {
     color: #000000;
     width: 104px; 							          
 }
-
-
 /* ---------------------------------------------------------------
 	AGENDA
 --------------------------------------------------------------- */
@@ -395,14 +393,12 @@ strong {
 	margin: 0 auto; 
 	padding-left: 30px;
 }
-
 #agenda { 
  	position: relative;
  	margin: 0 auto 0px auto;
  	width: 746px;
- 	height: 540px;
- } 
- 
+ 	height: 1050px;
+ }
 #agenda a { 
  	color: #FFFFFF; 
  	text-decoration: none;
@@ -411,28 +407,23 @@ strong {
 	background-color: transparent;
 	border-bottom: dashed 1px #5555FF;	
 }
-
 #agenda a.case-heure-bas {
 	border-bottom: none;
 }
-
 #agenda a:hover { 
 	color: #FFFFFF; 
 	text-decoration: underline;
 	background-color: #9ac5e7;
 }
-
 #intersection { 
 	float: left; 
 	height: 15px; 
-	width: 30px; 
+	width: 15px; 
 }
-
 #col-heures { 
 	float: left;
-	width: 30px;
+	width: 20px;
 }
-
 #col-heures div { 
 	height: 41px; 
 	font-size: 9px; 
@@ -440,51 +431,29 @@ strong {
 	padding-right: 1px;
 	text-align: right; 
 }
-
 .border-TRB {	
 	border-top: solid 2px #5555FF; 
 	border-right: solid 2px #5555FF; 
 	border-bottom: solid 2px #5555FF; 
 }
- 
 .border-L { 
 	border-left: solid 2px #5555FF; 
 }
-
 .col-jour { 
 	margin-top: 1px; 
 	float: left; 
-	width: 112px; 
+	width: 99px; 
 }
-
 .case-jour { 
 	background-color: #5555FF;
 	float: left; 
-	width: 112px; 
+	width: 100px; 
 	height: 20px; 
 	padding-top: 2px;
 	text-align: center; 
 	color: #FFF;
+	font-size: 14px;
 }
-
-.zoneForm{
-	padding: 3px 0 3px 0;
-}
-
-.tailleZoneSaisie{
-	width : 200px;
-}
-
-.tailleZoneSaisieR{
-	width : 300px;
-	}
-
-.tailleBouton{
-	color: #FFFFFF;
-	border-radius: 5px;
-	background-color: #FFA500;
-}
-
 /* ---------------------------------------------------------------
 	RENDEZ-VOUS
 --------------------------------------------------------------- */
@@ -496,4 +465,51 @@ strong {
 }
 #horaire{
 	width: 35px;
+}
+#categories{
+	background-color: #FFFFFF;
+	border: solid 2px #9ac5e7;
+	width: 235px;
+	padding: 1px 1px 10px 1px;
+}
+#categories h3{
+	background-color: #9ac5e7;
+	padding: 10px;	
+	font-weight: bold;
+	font-size: 13px; 
+	text-align: center;
+}
+#categories p{
+	padding: 10px 10px 5px 10px;	
+}
+
+#categories ul{
+	margin-bottom: 10px;
+}
+#categories li{
+	padding-top: 2px; 	
+}	
+.categorie{
+ 	float: left; 
+	margin: 0px 5px 0px 20px; 
+	width: 10px; 
+	height: 10px; 
+}							  				 
+.groupeA{
+	border: solid 2px #00DD00; 
+	background-color: #00FF00;
+}
+.groupeB{
+	border: solid 2px #DD0000; 
+	background-color: #FF0000;
+}
+.groupeC{
+	border: solid 2px #0000DD; 
+	background-color: #0000FF;
+}
+.suivi{
+	float: left;
+	margin: 0px 5px 0px 20px; 
+	width: 10px; 
+	height: 10px; 
 }

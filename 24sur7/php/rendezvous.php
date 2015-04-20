@@ -41,17 +41,17 @@ session_start();
 lsvm_verifie_session();
 $lsvm_db_req=lsvm_db_connexion();
 $date=getdate();
-$day=$date["mday"];
-$month=$date["mon"];
-$year=$date["year"];
+$jour=$date["mday"];
+$mois=$date["mon"];
+$annee=$date["year"];
 lsvm_html_head('24sur7 | Rendez-Vous');
 lsvm_html_bandeau('RDV');
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
-lsvm_html_calendrier($day, $month, $year);
-echo	'<section id="categories">'.
-			lsvm_html_categories($_SESSION['nom'],$_SESSION['id'],$lsvm_db_req).
-		'</section>',
+lsvm_html_calendrier($jour, $mois, $annee);
+echo	'<section id="categories">';
+			lsvm_html_categories($_SESSION['nom'],$_SESSION['id'],$lsvm_db_req);
+		echo'</section>',
 		'</aside>',
 		'<section id="bcCentre">'.
 			(!empty($sqlparam)) ? lsvml_modifier_rendezvous():lsvml_nouveau_rendezvous().

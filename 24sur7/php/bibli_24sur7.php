@@ -146,30 +146,29 @@
 				$annee=date('Y',time());
 			}
 		}
-		/*$mois=$mois+$next-$prev;*/
-		$jour_actuel = mktime(0, 0, 0, $mois, $jour, $annee);
-		$jour_actuel_mprev = mktime(0, 0, 0, $mois-1, $jour, $annee);
+		$jourActuel = mktime(0, 0, 0, $mois, $jour, $annee);
+		$jourActuelMprev = mktime(0, 0, 0, $mois-1, $jour, $annee);
 		if ($jour>28){
-			$jour_actuel_mprev = mktime(0, 0, 0, $mois-1, $jour-5, $annee);
+			$jourActuelMprev = mktime(0, 0, 0, $mois-1, $jour-5, $annee);
 		}
-		$prem_jmois = mktime(0, 0, 0, $mois, 1, $annee);
-		$mois_nom = array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
-		$nb_jmois=date("t",	$jour_actuel);
-		$nb_jmois_prev=date("t", $jour_actuel_mprev);
-		$num_jour_mois=date('w',$prem_jmois);
-		$jour_actuel=date('j',time());
-		$semaine = date('W', mktime(0, 0, 0, $mois, $jour, $annee));
-		if ($num_jour_mois==0){
-			$num_jour_mois = 6;
+		$premJmois = mktime(0, 0, 0, $mois, 1, $annee);
+		$moisNom = array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+		$nbJmois=date("t",	$jourActuel);
+		$nbJmoisPrev=date("t", $jourActuelMprev);
+		$numJourMois=date('w',$premJmois);
+		$jourActuel=date('j',time());
+		$semaine=date('W', mktime(0, 0, 0, $mois, $jour, $annee));
+		if ($numJourMois==0){
+			$numJourMois = 6;
 		} else {
-			$num_jour_mois=$num_jour_mois-1;
+			$numJourMois=$numJourMois-1;
 		}
-		$last_jmois=mktime(0,0,0,$mois,$nb_jmois,$annee);
-		$last_jmois=date('w',$last_jmois);
-		$nb_case=0;
+		$lastJmois=mktime(0,0,0,$mois,$nbJmois,$annee);
+		$lastJmois=date('w',$lastJmois);
+		$nbCase=0;
 		echo '<section id="calendrier">',
 			'<p>',
-				'<a href="agenda.php?prev=1" class="flechegauche"><img src="../images/fleche_gauche.png" alt="picto fleche gauche"></a>',$mois_nom[$mois-1],' ',$annee,
+				'<a href="agenda.php?prev=1" class="flechegauche"><img src="../images/fleche_gauche.png" alt="picto fleche gauche"></a>',$moisNom[$mois-1],' ',$annee,
 				'<a href="agenda.php?next=1" class="flechedroite"><img src="../images/fleche_droite.png" alt="picto fleche droite"></a>',
 			'</p>',
 			'<table>',
@@ -177,19 +176,19 @@
 					'<th>Lu</th><th>Ma</th><th>Me</th><th>Je</th><th>Ve</th><th>Sa</th><th>Di</th>',
 				'</tr>',
 				'<tr>';
-				for($i=$nb_jmois_prev-$num_jour_mois+1;$i<=$nb_jmois_prev;$i++){
+				for($i=$nbJmoisPrev-$numJourMois+1;$i<=$nbJmoisPrev;$i++){
 					echo '<td><a class="lienJourHorsMois" href="#">',$i,'</a></td>';
-					$nb_case=$nb_case+1;
+					$nbCase=$nbCase+1;
 				}
-				for ($i=1; $i<=$nb_jmois; $i++){
-					if($nb_case%7==0){
+				for ($i=1; $i<=$nbJmois; $i++){
+					if($nbCase%7==0){
 						if (date('W', mktime(0, 0, 0, $mois, $i + 1, $annee)) == $semaine) {
 							echo '</tr><tr class="semaineCourante">';
 						}else{
 							echo '</tr><tr>';
 						}
 					}
-					if(($i==$jour_actuel)/*&&($next==0)&&($prev==0)*/){
+					if(($i==$jourActuel)/*&&($next==0)&&($prev==0)*/){
 						echo '<td class="aujourdHui"><a href="#">',$i,'</a></td>';
 					} else {
 						if($i==$jour){
@@ -198,10 +197,10 @@
 							echo '<td><a href="#">',$i,'</a></td>';
 						}
 					}
-					$nb_case=$nb_case+1;
+					$nbCase=$nbCase+1;
 				}
-				if ($last_jmois!=0){
-					for($i=1;$i<=7-$last_jmois;$i++){
+				if ($lastJmois!=0){
+					for($i=1;$i<=7-$lastJmois;$i++){
 						echo '<td><a class="lienJourHorsMois" href="#">',$i,'</a></td>';
 					}
 				}			
@@ -459,7 +458,6 @@ function lsvm_verifie_session(){
 	}
 }
 function lsvm_html_categories($nom,$id,$bd) {
-	// On recupère dans la base de données les catégorie de l'agenda utilisateur
 	lsvm_db_connexion();
 	$sql="SELECT catCouleurBordure, catCouleurFond, catNom FROM	categorie WHERE	catIDUtilisateur=$id";
 	$resultat=mysqli_query($bd, $sql) or fd_bd_erreur($sql);
@@ -470,7 +468,6 @@ function lsvm_html_categories($nom,$id,$bd) {
 		echo '<li> <div class="categorie" style=" border: solid 2px #',$data['catCouleurBordure'],'; background-color: #',$data['catCouleurFond'],';"></div>',$data["catNom"],'';
 	}
 	echo '</ul>';
-	// On cherche dans la BD les agendas suivis par l'utilisateur 
 	$sql= "SELECT suiIDSuivi
 		FROM suivi
 		WHERE suiIDSuiveur = $id ";
@@ -481,7 +478,6 @@ function lsvm_html_categories($nom,$id,$bd) {
 			echo '<p>Agenda suivis : </p>';
 			$affichage_suivi=1;
 		}
-		// on recupère le nom du suivi
 		$sqlSuivi= "SELECT utiNom
 				FROM utilisateur	
 				WHERE utiID = ".$data['suiIDSuivi'];			
@@ -502,5 +498,254 @@ function lsvm_html_categories($nom,$id,$bd) {
 		echo '</ul>';
 	}
 	echo '</ul>';
+}
+function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
+	lsvm_db_connexion();
+	$id=$idSuivi;
+	$moisNom=array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+	if($idSuivi!=$_SESSION['id']){
+		$sqlSuivi="SELECT utiNom FROM utilisateur WHERE utiID = $idSuivi";			
+		$resultatSuivi=mysqli_query($bd, $sqlSuivi) or fd_db_err($sqlSuivi);	
+		$dataSuivi=mysqli_fetch_assoc($resultatSuivi);		
+		$nom=$dataSuivi['utiNom'];
+	}
+	else{	
+		$nom=$_SESSION['nom'];
+	}
+	echo'<p id="titreAgenda">';
+		$jourPrec=$jour-7;
+		$moisPrec=$mois;
+		$anneePrec=$annee;
+		if($jourPrec<1){
+			$moisPrec=$mois-1;
+			if($moisPrec==0){
+				$moisPrec=12;
+				$anneePrec=$annee-1;
+			}
+			$jourPrec=$jourPrec+date('t', mktime(0, 0, 0,$moisPrec,$jour,$annee));
+		}
+	echo'<a href="agenda.php?jour=',$jourPrec,'&mois=',$moisPrec,'&annee=',$anneePrec,'&idSuivi=',$idSuivi,'" class="flechegauche"><img src="../images/fleche_gauche.png" alt="picto fleche gauche"></a>';
+		// affichage du titre du semainier
+		// Quel est le nom du jour du début de la semaine (lundi, mardi, etc.)
+		$jourNum = date('w', mktime(0, 0, 0,$mois,$jour,$annee));
+		($jourNum == 0) && $jourNum = 7;			
+		$jourDebut=$jour-($jourNum-1);
+		$mois1=$mois;
+		$jourFin=$jourDebut+6;
+		$mois2=$mois;
+		// Gestion des jours du mois précendent pouvant être afficher
+		if($jourDebut<1){
+			$mois1=$mois1-1;
+			if($mois1==0){
+				$mois1=12;
+			}
+		$jourDebut=$jourDebut+date('t', mktime(0, 0, 0,$mois1,$jour,$annee));
+		}
+		// Gestion des jours du mois suivant pouvant être afficher
+		elseif($jourFin>date('t', mktime(0, 0, 0,$mois,$jour,$annee))){
+			$jourFin=$jourFin-date('t', mktime(0, 0, 0,$mois,$jour,$annee));
+			$mois2=$mois+1;
+			if($mois2==13){
+				$mois2=1;
+			}
+		}
+	echo'<strong>Semaine du ',$jourDebut,' ',$moisNom[$mois1],'  au ',$jourFin,' ',$moisNom[$mois2],'</strong> pour <strong>',$nom,'</strong>';
+	// Gestion de la fleche de droite
+	$jourSuiv=$jour+7;
+	$moisSuiv=$mois;
+	$anneeSuiv=$annee;
+	if($jourSuiv>date('t', mktime(0, 0, 0,$mois,$jour,$annee))){
+		$moisSuiv=$mois+1;
+		if($moisSuiv==13){
+			$moisSuiv=1;
+			$anneeSuiv=$annee+1;
+		}
+		$jourSuiv=$jourSuiv-date('t', mktime(0, 0, 0,$moisSuiv,$jour,$annee));
+	}
+	echo'<a href="agenda.php?jour=',$jourSuiv,'&mois=',$moisSuiv,'&annee=',$anneeSuiv,'&idSuivi=',$idSuivi,'" class="flechedroite"><img src="../images/fleche_droite.png" alt="picto fleche droite"></a></p>',
+		'<section id="agenda">',
+		'<div id="intersection"></div>';
+		// affichage des jours en fonction des paramètres
+		$sqlJours="SELECT utiJours,utiHeureMin, utiHeureMax FROM utilisateur	WHERE utiID = $idSuivi";
+		$resultatJours=mysqli_query($bd, $sqlJours) or fd_db_err($sqlJours);
+		$dataJours= mysqli_fetch_assoc($resultatJours);
+		$nomJour=array("Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche");
+		$mask=1;
+		// on utilise un mask de utiJours avec les puissance de 10 pour connaitre les jours affichable
+		$jourAfficher=$dataJours['utiJours'];
+		$aff=0; // indice defini pour la classe border-L qui est sur la premiere case a gauche
+		$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
+		// boucle d'affichage des jours
+		for($i=0;$i<7;$i++){
+			if(decbin($jourAfficher&$mask)>=$mask){
+				if($jourAff>date('t', mktime(0, 0, 0, $mois1,$jourDebut, $annee))){
+					$jourAff=1;
+				}
+				if($aff==0){
+					echo '<div class="case-jour border-TRB border-L">',$nomJour[$i],' ',$jourAff,'</div>';
+					$aff=1;
+				}
+				else{
+					echo '<div class="case-jour border-TRB">',$nomJour[$i],' ',$jourAff,'</div>';
+				}
+			}
+			$mask=$mask*(2);
+			$jourAff++;
+		}
+		// Affichage des rendez-vous sur la journée entière
+		$sqlJEnt="SELECT rdvLibelle,rdvIDCategorie,rdvDate,rdvID FROM rendezvous WHERE rdvIDUtilisateur = $idSuivi AND rdvHeureDebut = -1";	
+		$resultatJEnt=mysqli_query($bd, $sqlJEnt) or fd_db_err($sqlJEnt);
+		echo '<div class="rdvJour">';	
+		while($dataJEnt=mysqli_fetch_assoc($resultatJEnt)){
+			// Selection des couleur pour la catégorie
+			$sqlCouleur="SELECT * FROM categorie WHERE catID=".$dataRDV['rdvIDCategorie'];
+			$resultatCouleur=mysqli_query($bd, $sqlCouleur) or fd_db_err($sqlCouleur);		
+			$dataCouleur=mysqli_fetch_assoc($resultatCouleur);
+			$mask=1;
+			// on utilise un mask de utiJours avec les puissance de 10 pour connaitre les jours affichable
+			$jourAfficher=$dataSuivi['utiJours'];
+			$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
+			$moisAff=$mois1;
+			$anneeAff=$annee;	
+			// boucle d'affichage des rdv en fontion des jours afficheable
+			for($i=0;$i<7;$i++){
+				if(decbin($jour_afficher&$mask)>=$mask){	
+					if($jour_aff>date('t', mktime(0, 0, 0, $mois1,$jourDebut, $annee))){
+						$jourAff=1;
+						$moisAff=$moisAff+1;
+						if($moisAff==13){
+							$moisAff=1;
+							$anneeAff=$anneeAff+1;
+						}
+					}
+					// on met la date dans le bon format pour la comparaison
+					$dateAff=$anneeAff;
+					if($moisAff<10){
+						$dateAff.="0".$moisAff;
+					}
+					else{
+						$dateAff.=$moisAff;
+					}
+					if($jourAff<10){
+						$dateAff.="0".$jourAff;
+					}
+					else{
+						$dateAff.=$jourAff;
+					}
+					if($dataJours['rdvDate']==$dateAff){
+						if($i==0){
+							$left=35;
+						}
+						else{
+							$left=35+ 700/7*$i;
+						}
+						if($idSuivi!=$_SESSION['id']){
+							$lien='#';
+						}
+						else{
+							$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee."&rdvID=".$DD['rdvID'];
+						}
+						// On verifie qu'on affiche que les catégorie publique des autres  utilisateurs 
+						if(($dataJEnt['catPublic']!=0)||($idSuivi==$_SESSION['id'])){			
+							echo'<a style="background-color: #',$dataJEnt['catCouleurFond'],'; border: solid 2px #',$dataJEnt['catCouleurBordure'],'; color: #',couleur_visible($dataJEnt['catCouleurFond']),'; top: 131px; height: 15px; width: 90px; top: 28px; left: ',$left,'px;" class="rendezvous" href="',$lien,'">',$dataJours['rdvLibelle'],'</a>';
+						}
+					}
+					$mask=$mask*(2);
+					$jourAff++;
+				}
+			}
+		}
+		echo '</div>';			
+		// Affichage des heures à afficher en fonction des paramètres
+		echo 	'<div id="col-heures">';
+		for($i=$dataJours['utiHeureMin'];$i<$dataJours['utiHeureMax'];$i++){
+			echo '<div>',$i,'h</div>';
+		}
+		echo '</div>';
+		// Affichage des colonnes su semainier
+		$mask=1;
+		$jourAfficher=$dataJours['utiJours'];
+		$aff=0;
+		$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
+		$moisAff=$mois1;
+		$anneeAff=$annee;
+		for($i=0;$i<7;$i++){
+			if(decbin($jourAfficher&$mask)>=$mask){
+				if($aff==0){
+					echo '<div class="col-jour border-TRB border-L">';
+					$aff=1;
+				}
+				else{
+					echo '<div class="col-jour border-TRB">';
+				}
+				// Affichage des cases
+				for($j=$dataJours['utiHeureMin'];$j<$dataJours['utiHeureMax'];$j++){
+					if($idSuivi!=$_SESSION['id']){
+						$lien='#';
+					}
+					else{
+						$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee;
+					}
+					if($j==$dataJours['utiHeureMax']-1){
+						echo '<a href="',$lien,'" class="case-heure-bas"></a>';
+					}
+					else{
+						echo ' <a href="',$lien,'"></a>';
+					}
+				}
+				if($jourAff>date('t',mktime(0, 0, 0, $mois1,$jourDebut,$annee))){
+					$jourAff=1;
+					$moisAff=$moisAff+1;
+					if($moisAff==13){
+						$moisAff=1;
+						$anneeAff=$annee_aff+1;
+					}
+				}
+				// on met la date dans le bon format pour la comparaison	
+				$dateAff=$anneeAff;
+				if($moisAff<10){
+					$dateAff.="0".$moisAff;
+				}
+				else{
+					$dateAff.=$moisAff;
+				}
+				if($jourAff<10){
+					$dateAff.="0".$jourAff;
+				}
+				else{
+					$dateAff.=$jourAff;
+				}
+				// Selection des rendez-vous
+				$sqlRDV="SELECT rdvLibelle,rdvIDCategorie,rdvDate,rdvHeureDebut,rdvHeureFin,rdvID FROM rendezvous WHERE rdvIDUtilisateur = $idSuivi AND rdvDate = ".$dateAff;
+				$resultatRDV=mysqli_query($bd,$sqlRDV) or fd_db_err($sqlRDV);
+				// Affichage des rendez-vous horaire
+				while($dataRDV=mysqli_fetch_assoc($resultatRDV)){
+					// Selection des couleur pour la catégorie
+					$sqlCouleur="SELECT * FROM categorie WHERE catID = ".$dataRDV['rdvIDCategorie'];
+					$resultatCouleur=mysqli_query($bd, $sqlCouleur) or fd_db_err($sqlCouleur);
+					$dataCouleur=mysqli_fetch_assoc($resultatCouleur);
+					if(($dataRDV['rdvHeureDebut']>=($dataSuivi['utiHeureMin']*100))&&($dataRDV['rdvHeureFin']<=($dataSuivi['utiHeureMax']*100))){
+						// Determination de la taille de l'évenement (41px=1h -2px pour les bordure)
+						$height=(($dataRDV['rdvHeureFin']-$dataRDV['rdvHeureDebut'])/100)*39;
+						// Determination de la hauteur à laquel on place le rendez-vous(41px=1h)
+						$top=53+(($dataRDV['rdvHeureDebut']-($dataSuivi['utiHeureMin']*100))/100)*41;
+						if($idSuivi!=$_SESSION['id']){
+							$lien='#';
+						}
+						else{
+							$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee."&rdvID=".$dataRDV['rdvID'];
+						}
+						// On verifie qu'on affiche que les catégorie publique des autres  utilisateurs 
+						if(($dataCouleur['catPublic']!=0)||($idSuivi==$_SESSION['id'])){
+							echo'<a style="background-color: #',$dataCouleur['catCouleurFond'],'; border: solid 2px #',$dataCouleur['catCouleurBordure'],'; color: #',couleur_visible($dataCouleur['catCouleurFond']),'; top: ',$top,'px; height: ',$height,'px; wight: 90px;" class="rendezvous" href="',$lien,'">',$dataRDV['rdvLibelle'],'</a>';
+						}
+					}
+				}
+				echo '</div>';
+			}
+			$mask=$mask*(2);
+			$jourAff++;
+		}
+		echo '</section></div>';
 }
 ?>
