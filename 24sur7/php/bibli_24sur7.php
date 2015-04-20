@@ -15,6 +15,8 @@
 	define ('APP_Z_SUBMIT', "submit");
 	define ('APP_Z_RESET', "reset");
 	define ('APP_Z_SEARCH', "search");
+//Constante de la phase de test
+	define('APP_TEST', TRUE);
 	
 /**
  * Fonction de l'en-tête de page
@@ -270,14 +272,14 @@ function fd_bd_erreurExit($msg) {
     error_log($buffer, 3, 'erreurs_bd.txt');
 	
     // Génération d'une page spéciale erreur
-    fd_html_head('24sur7');
+    lsvm_html_head('24sur7');
 		
     echo '<h1>24sur7 est overbook&eacute;</h1>',
         '<div id="bcDescription">',
             '<h3 class="gauche">Merci de r&eacute;essayez dans un moment</h3>',
         '</div>';
 	
-    fd_html_pied();
+    lsvm_html_pied();
     exit();
 }
 
@@ -455,5 +457,50 @@ function lsvm_verifie_session(){
 		header('refresh:3; url=./identification.php');
 		exit();
 	}
+}
+function lsvm_html_categories($nom,$id,$bd) {
+	// On recupère dans la base de données les catégorie de l'agenda utilisateur
+	lsvm_db_connexion();
+	$sql="SELECT catCouleurBordure, catCouleurFond, catNom FROM	categorie WHERE	catIDUtilisateur=$id";
+	$resultat=mysqli_query($bd, $sql) or fd_bd_erreur($sql);
+	echo'<h3>Vos agendas</h3>',
+		'<p><a href="agenda.php?idSuivi=',$id,'">Agenda de ',$nom,'</a></p>',
+		'<ul id="mine">';
+	while($data=mysqli_fetch_assoc($resultat)){
+		echo '<li> <div class="categorie" style=" border: solid 2px #',$data['catCouleurBordure'],'; background-color: #',$data['catCouleurFond'],';"></div>',$data["catNom"],'';
+	}
+	echo '</ul>';
+	// On cherche dans la BD les agendas suivis par l'utilisateur 
+	$sql= "SELECT suiIDSuivi
+		FROM suivi
+		WHERE suiIDSuiveur = $id ";
+	$resultat =mysqli_query($bd, $sql) or fd_bd_erreur($sql);
+	echo '<ul>';
+	while($data=mysqli_fetch_assoc($resultat)){
+		if(empty($affichage_suivi)){
+			echo '<p>Agenda suivis : </p>';
+			$affichage_suivi=1;
+		}
+		// on recupère le nom du suivi
+		$sqlSuivi= "SELECT utiNom
+				FROM utilisateur	
+				WHERE utiID = ".$data['suiIDSuivi'];			
+		$resultatSuivi=mysqli_query($bd, $sqlSuivi) or fd_db_err($sqlSuivi);
+		$dataSuivi= mysqli_fetch_assoc($resultatSuivi);	
+		echo '<li><div class="suivi" style=" border: solid 0.5px #FF4000; background-color: #FAAC58 "></div><a href="agenda.php?idSuivi=',$data['suiIDSuivi'],'">',$dataSuivi['utiNom'],'</a>';		
+		$sqlSuiveur= "SELECT	*
+			FROM	categorie
+			WHERE	catIDUtilisateur = ".$data['suiIDSuivi'];
+			
+		$resultatSuiveur=mysqli_query($bd, $sqlSuiveur) or fd_db_err($sqlSuiveur);
+		echo	'<ul>';
+		while($dataSuiveur=mysqli_fetch_assoc($resultatSuiveur)) {
+			if($dataSuiveur['catPublic']==1){
+				echo '<li style="margin: 2px 0px 0px 25px;"><div class="suivi" style=" border: solid 2px #',$dataSuiveur['catCouleurBordure'],'; background-color: #',$dataSuiveur['catCouleurFond'],';"></div>',$dataSuiveur["catNom"];
+			}
+		}
+		echo '</ul>';
+	}
+	echo '</ul>';
 }
 ?>

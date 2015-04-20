@@ -1,13 +1,13 @@
 <?php
 include('bibli_24sur7.php');
 function lsvml_modifier_rendezvous(){
-	echo	'<p><strong>Nouvelle saisie</strong></p>',
-			'<hr>',
-			'<form method=POST action="rendezvous.php">',
-			'<label>Libellé: </label><input type="text" name="libelle" required><br>',
-			'<label>Date:</label><input type="number" name="selDate_j" min="1" max="31" value="1" size="2" id="jour" required>
-					 <input type="number" name="selDate_m" min="1" max="12" value="1" size="2" id="jour" required>
-					 <input type="number" name="selDate_a" min="2015" value="2015" size="2" id="annee" required><br>',
+	echo'<p><strong>Nouvelle saisie</strong></p>',
+		'<hr>',
+		'<form method=POST action="rendezvous.php">',
+		'<label>Libellé: </label><input type="text" name="libelle" required><br>',
+		'<label>Date:</label><input type="number" name="selDate_j" min="1" max="31" value="1" size="2" id="jour" required>
+							<input type="number" name="selDate_m" min="1" max="12" value="1" size="2" id="jour" required>
+							<input type="number" name="selDate_a" min="2015" value="2015" size="2" id="annee" required><br>',
         '<label>Catégorie:</label><input type="number" required><br>',
         '<label>Horaire Début:</label>  <input type="number" name="heuredeb" min="0" max="23" value="8" id="horaire" required>:
 							<input type="number" name="minutesdeb" min="00" max="59" value="00" id="horaire" required><br>',
@@ -22,7 +22,7 @@ function lsvml_nouveau_rendezvous(){
 	echo	'<p><strong>Nouvelle saisie</strong></p>',
 			'<hr>',
 			'<form method=POST action="rendezvous.php">',
-			'<label>Libellé: </label><input type="text" name="libelle" required><br>',
+			'<label>Libellé: </label><input type="text" name="libelle"  required><br>',
 			'<label>Date:</label><input type="number" name="selDate_j" min="1" max="31" value="1" size="2" id="jour" required>
 					 <input type="number" name="selDate_m" min="1" max="12" value="1" size="2" id="jour" required>
 					 <input type="number" name="selDate_a" min="2015" value="2015" size="2" id="annee" required><br>',
@@ -36,20 +36,22 @@ function lsvml_nouveau_rendezvous(){
         '<p><a href="javascript:history.back()">Retour à l\'agenda</a></p>',
         '</form>';
 }
-lsvm_html_head('24sur7 | Rendez-Vous');
-lsvm_html_bandeau('RDV');
-echo '<section id="bcContenu">',
-		'<aside id="bcGauche">';
+ob_start();
 session_start();
 lsvm_verifie_session();
+$lsvm_db_req=lsvm_db_connexion();
 $date=getdate();
 $day=$date["mday"];
 $month=$date["mon"];
 $year=$date["year"];
+lsvm_html_head('24sur7 | Rendez-Vous');
+lsvm_html_bandeau('RDV');
+echo '<section id="bcContenu">',
+		'<aside id="bcGauche">';
 lsvm_html_calendrier($day, $month, $year);
-echo		'<section id="categories">',
-				'Ici : bloc catégories pour afficher les catégories de rendez-vous',
-			'</section>',
+echo	'<section id="categories">'.
+			lsvm_html_categories($_SESSION['nom'],$_SESSION['id'],$lsvm_db_req).
+		'</section>',
 		'</aside>',
 		'<section id="bcCentre">'.
 			(!empty($sqlparam)) ? lsvml_modifier_rendezvous():lsvml_nouveau_rendezvous().

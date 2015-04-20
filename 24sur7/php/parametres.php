@@ -1,7 +1,9 @@
 <?php
 include('bibli_24sur7.php');
+ob_start();
 session_start();
 lsvm_verifie_session();
+$lsvm_db_req=lsvm_db_connexion();
 lsvm_html_head('24sur7 | Paramètres');
 lsvm_html_bandeau(APP_PAGE_PARAMETRES);
 echo'<section id="bcContenu">',
@@ -21,7 +23,7 @@ echo'<section id="bcContenu">',
 	'<input type="submit" name="btnEnvoiOptions" value="Mettre à jour"><input type="reset" name="btnAnnuleOptions" value="Annuler">',
 	'</form>',
 	'<h2>Vos catégories</h2><hr>',
-	'<label>Nom</label><input type="text" name="nomcat"> <label>Fond</label><input type="text" name="fondcat"> <label>Bordure</label><input type="text" name="bordcat"> <input type="checkbox" name="public" value="public"><label>Public</label><input type="image" alt="svg"><input type="image" alt="suppr"><br>',
+	'<label>Nom</label><input type="text" name="nomcat"> <label>Fond</label><input type="text" name="fondcat"> <label>Bordure</label><input type="text" name="bordcat"> <input type="checkbox" name="public" value="public"><label>Public</label><input type="image" src="../images/disquette.png" alt="svg"><input type="image" src="../images/supprimer.png" alt="suppr"><br>',
 	'<h3>Nouvelle catégorie:</h3>',
 	'<label>Nom</label><input type="text" name="nomnewcat"> <label>Fond</label><input type="text" name="fondnewcat"> <label>Bordure</label><input type="text" name="bordnewcat"> <input type="checkbox" name="public" value="public"><label>Public</label><input type=submit name="btnajout" value="Ajouter"><br>',
 	'</section>';
