@@ -16,7 +16,7 @@
 	define ('APP_Z_RESET', "reset");
 	define ('APP_Z_SEARCH', "search");
 //Constante de la phase de test
-	define('APP_TEST', TRUE);
+	define('APP_TEST', FALSE);
 	
 /**
  * Fonction de l'en-tête de page
@@ -215,9 +215,9 @@
  *
  * @param string	$sql	Requête SQL ou message
  */
-function fd_bd_erreur($sql) {
-    $errNum = mysqli_errno($GLOBALS['bd']);
-    $errTxt = mysqli_error($GLOBALS['bd']);
+function lsvm_bd_erreur($sql,$bd) {
+    $errNum = mysqli_errno($bd);
+    $errTxt = mysqli_error($bd);
 		
     // Collecte des informations facilitant le debugage
     $msg = '<h4>Erreur de requ&ecirc;te</h4>'
@@ -291,11 +291,12 @@ function fd_bd_erreurExit($msg) {
  * @param   constante 'APP_BD_URL' Adresse de la base de données
  * @param   constante 'APP_BD_USER' login de l'utilisateur
  * @param   constante 'APP_BD_PASS' mot de passe de l'utilisateur
+ * @return $lsvm_bd   Ressource de connexion à la base de donnée
  */
 function lsvm_db_connexion(){
 		$lsvm_bd=mysqli_connect(APP_BD_URL,APP_BD_USER,APP_BD_PASS,APP_BD_NOM);
 	if ($lsvm_bd===FALSE){
-		fd_bd_erreur($lsvm_bd);
+		lsvm_bd_erreur("connexion fail",$lsvm_bd);
 	}
 	else{
 		return $lsvm_bd;
@@ -457,10 +458,18 @@ function lsvm_verifie_session(){
 		exit();
 	}
 }
+
+/**
+ * Fonction permettant d'afficher les catégories de l'utilisateur courant
+ * 
+ * @param $nom  nom d'utilisateur de l'utilisateur de la session courante
+ * @param $id	id d'utilisateur de l'utilisateur de la session courante
+ * @param $bd	ressource de connexion à la base de donnée
+ */
 function lsvm_html_categories($nom,$id,$bd) {
 	lsvm_db_connexion();
 	$sql="SELECT catCouleurBordure, catCouleurFond, catNom FROM	categorie WHERE	catIDUtilisateur=$id";
-	$resultat=mysqli_query($bd, $sql) or fd_bd_erreur($sql);
+	$resultat=mysqli_query($bd, $sql) or lsvm_bd_erreur($sql,$bd);
 	echo'<h3>Vos agendas</h3>',
 		'<p><a href="agenda.php?idSuivi=',$id,'">Agenda de ',$nom,'</a></p>',
 		'<ul id="mine">';
@@ -471,7 +480,7 @@ function lsvm_html_categories($nom,$id,$bd) {
 	$sql= "SELECT suiIDSuivi
 		FROM suivi
 		WHERE suiIDSuiveur = $id ";
-	$resultat =mysqli_query($bd, $sql) or fd_bd_erreur($sql);
+	$resultat =mysqli_query($bd, $sql) or lsvm_bd_erreur($sql,$bd);
 	echo '<ul>';
 	while($data=mysqli_fetch_assoc($resultat)){
 		if(empty($affichage_suivi)){
@@ -499,6 +508,16 @@ function lsvm_html_categories($nom,$id,$bd) {
 	}
 	echo '</ul>';
 }
+
+/**
+ * Fonction permettant d'afficher le semainier de l'utilisateur choisi
+ * 
+ * @param $jour 	jour à prendre comme base pour le calcul du semainier
+ * @param $mois 	mois à prendre comme base pour le calcul du semainier
+ * @param $annee 	année à prendre comme base pour le calcul du semainier
+ * @param $idSuivi	id de l'utilisateur auquel est associé le semainier
+ * @param $bd		ressource de connexion à la base de donnée
+ */
 function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 	lsvm_db_connexion();
 	$id=$idSuivi;
@@ -525,15 +544,13 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 			$jourPrec=$jourPrec+date('t', mktime(0, 0, 0,$moisPrec,$jour,$annee));
 		}
 	echo'<a href="agenda.php?jour=',$jourPrec,'&mois=',$moisPrec,'&annee=',$anneePrec,'&idSuivi=',$idSuivi,'" class="flechegauche"><img src="../images/fleche_gauche.png" alt="picto fleche gauche"></a>';
-		// affichage du titre du semainier
-		// Quel est le nom du jour du début de la semaine (lundi, mardi, etc.)
+		//Détermination du nom du jour de la semaine
 		$jourNum = date('w', mktime(0, 0, 0,$mois,$jour,$annee));
 		($jourNum == 0) && $jourNum = 7;			
 		$jourDebut=$jour-($jourNum-1);
 		$mois1=$mois;
 		$jourFin=$jourDebut+6;
 		$mois2=$mois;
-		// Gestion des jours du mois précendent pouvant être afficher
 		if($jourDebut<1){
 			$mois1=$mois1-1;
 			if($mois1==0){
@@ -541,7 +558,6 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 			}
 		$jourDebut=$jourDebut+date('t', mktime(0, 0, 0,$mois1,$jour,$annee));
 		}
-		// Gestion des jours du mois suivant pouvant être afficher
 		elseif($jourFin>date('t', mktime(0, 0, 0,$mois,$jour,$annee))){
 			$jourFin=$jourFin-date('t', mktime(0, 0, 0,$mois,$jour,$annee));
 			$mois2=$mois+1;
@@ -550,7 +566,6 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 			}
 		}
 	echo'<strong>Semaine du ',$jourDebut,' ',$moisNom[$mois1],'  au ',$jourFin,' ',$moisNom[$mois2],'</strong> pour <strong>',$nom,'</strong>';
-	// Gestion de la fleche de droite
 	$jourSuiv=$jour+7;
 	$moisSuiv=$mois;
 	$anneeSuiv=$annee;
@@ -565,17 +580,14 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 	echo'<a href="agenda.php?jour=',$jourSuiv,'&mois=',$moisSuiv,'&annee=',$anneeSuiv,'&idSuivi=',$idSuivi,'" class="flechedroite"><img src="../images/fleche_droite.png" alt="picto fleche droite"></a></p>',
 		'<section id="agenda">',
 		'<div id="intersection"></div>';
-		// affichage des jours en fonction des paramètres
 		$sqlJours="SELECT utiJours,utiHeureMin, utiHeureMax FROM utilisateur	WHERE utiID = $idSuivi";
 		$resultatJours=mysqli_query($bd, $sqlJours) or fd_db_err($sqlJours);
 		$dataJours= mysqli_fetch_assoc($resultatJours);
 		$nomJour=array("Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche");
 		$mask=1;
-		// on utilise un mask de utiJours avec les puissance de 10 pour connaitre les jours affichable
 		$jourAfficher=$dataJours['utiJours'];
-		$aff=0; // indice defini pour la classe border-L qui est sur la premiere case a gauche
-		$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
-		// boucle d'affichage des jours
+		$aff=0; // aff est utilisé pour la classe border-L qui est sur la premiere case a gauche
+		$jourAff=$jourDebut;
 		for($i=0;$i<7;$i++){
 			if(decbin($jourAfficher&$mask)>=$mask){
 				if($jourAff>date('t', mktime(0, 0, 0, $mois1,$jourDebut, $annee))){
@@ -592,25 +604,21 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 			$mask=$mask*(2);
 			$jourAff++;
 		}
-		// Affichage des rendez-vous sur la journée entière
 		$sqlJEnt="SELECT rdvLibelle,rdvIDCategorie,rdvDate,rdvID FROM rendezvous WHERE rdvIDUtilisateur = $idSuivi AND rdvHeureDebut = -1";	
 		$resultatJEnt=mysqli_query($bd, $sqlJEnt) or fd_db_err($sqlJEnt);
 		echo '<div class="rdvJour">';	
 		while($dataJEnt=mysqli_fetch_assoc($resultatJEnt)){
-			// Selection des couleur pour la catégorie
-			$sqlCouleur="SELECT * FROM categorie WHERE catID=".$dataRDV['rdvIDCategorie'];
-			$resultatCouleur=mysqli_query($bd, $sqlCouleur) or fd_db_err($sqlCouleur);		
+			$sqlCouleur="SELECT * FROM categorie WHERE catID=".$dataJEnt['rdvIDCategorie'];
+			$resultatCouleur=mysqli_query($bd,$sqlCouleur) or lsvm_bd_erreur($sqlCouleur,$bd);		
 			$dataCouleur=mysqli_fetch_assoc($resultatCouleur);
 			$mask=1;
-			// on utilise un mask de utiJours avec les puissance de 10 pour connaitre les jours affichable
-			$jourAfficher=$dataSuivi['utiJours'];
-			$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
+			$jourAfficher=$dataJours['utiJours'];
+			$jourAff=$jourDebut;
 			$moisAff=$mois1;
 			$anneeAff=$annee;	
-			// boucle d'affichage des rdv en fontion des jours afficheable
 			for($i=0;$i<7;$i++){
-				if(decbin($jour_afficher&$mask)>=$mask){	
-					if($jour_aff>date('t', mktime(0, 0, 0, $mois1,$jourDebut, $annee))){
+				if(decbin($jourAfficher&$mask)>=$mask){	
+					if($jourAff>date('t', mktime(0, 0, 0, $mois1,$jourDebut, $annee))){
 						$jourAff=1;
 						$moisAff=$moisAff+1;
 						if($moisAff==13){
@@ -618,7 +626,6 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 							$anneeAff=$anneeAff+1;
 						}
 					}
-					// on met la date dans le bon format pour la comparaison
 					$dateAff=$anneeAff;
 					if($moisAff<10){
 						$dateAff.="0".$moisAff;
@@ -632,7 +639,7 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 					else{
 						$dateAff.=$jourAff;
 					}
-					if($dataJours['rdvDate']==$dateAff){
+					if($dataJEnt['rdvDate']==$dateAff){
 						if($i==0){
 							$left=35;
 						}
@@ -643,11 +650,10 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 							$lien='#';
 						}
 						else{
-							$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee."&rdvID=".$DD['rdvID'];
+							$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee."&rdvID=".$dataJEnt['rdvID'];
 						}
-						// On verifie qu'on affiche que les catégorie publique des autres  utilisateurs 
-						if(($dataJEnt['catPublic']!=0)||($idSuivi==$_SESSION['id'])){			
-							echo'<a style="background-color: #',$dataJEnt['catCouleurFond'],'; border: solid 2px #',$dataJEnt['catCouleurBordure'],'; color: #',couleur_visible($dataJEnt['catCouleurFond']),'; top: 131px; height: 15px; width: 90px; top: 28px; left: ',$left,'px;" class="rendezvous" href="',$lien,'">',$dataJours['rdvLibelle'],'</a>';
+						if(($dataCouleur['catPublic']!=0)||($idSuivi==$_SESSION['id'])){			
+							echo'<a style="background-color: #',$dataCouleur['catCouleurFond'],'; border: solid 2px #',$dataCouleur['catCouleurBordure'],'; color: #',couleur_visible($dataCouleur['catCouleurFond']),'; top: 131px; height: 15px; width: 90px; top: 28px; left: ',$left,'px;" class="rendezvous" href="',$lien,'">',$dataJEnt['rdvLibelle'],'</a>';
 						}
 					}
 					$mask=$mask*(2);
@@ -656,17 +662,15 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 			}
 		}
 		echo '</div>';			
-		// Affichage des heures à afficher en fonction des paramètres
 		echo 	'<div id="col-heures">';
 		for($i=$dataJours['utiHeureMin'];$i<$dataJours['utiHeureMax'];$i++){
 			echo '<div>',$i,'h</div>';
 		}
 		echo '</div>';
-		// Affichage des colonnes su semainier
 		$mask=1;
 		$jourAfficher=$dataJours['utiJours'];
 		$aff=0;
-		$jourAff=$jourDebut; // les numero afficher dans les cases avec les jours
+		$jourAff=$jourDebut;
 		$moisAff=$mois1;
 		$anneeAff=$annee;
 		for($i=0;$i<7;$i++){
@@ -678,7 +682,6 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 				else{
 					echo '<div class="col-jour border-TRB">';
 				}
-				// Affichage des cases
 				for($j=$dataJours['utiHeureMin'];$j<$dataJours['utiHeureMax'];$j++){
 					if($idSuivi!=$_SESSION['id']){
 						$lien='#';
@@ -700,8 +703,7 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 						$moisAff=1;
 						$anneeAff=$annee_aff+1;
 					}
-				}
-				// on met la date dans le bon format pour la comparaison	
+				}	
 				$dateAff=$anneeAff;
 				if($moisAff<10){
 					$dateAff.="0".$moisAff;
@@ -715,27 +717,21 @@ function lsvm_html_semainier($jour,$mois,$annee,$idSuivi,$bd){
 				else{
 					$dateAff.=$jourAff;
 				}
-				// Selection des rendez-vous
 				$sqlRDV="SELECT rdvLibelle,rdvIDCategorie,rdvDate,rdvHeureDebut,rdvHeureFin,rdvID FROM rendezvous WHERE rdvIDUtilisateur = $idSuivi AND rdvDate = ".$dateAff;
 				$resultatRDV=mysqli_query($bd,$sqlRDV) or fd_db_err($sqlRDV);
-				// Affichage des rendez-vous horaire
 				while($dataRDV=mysqli_fetch_assoc($resultatRDV)){
-					// Selection des couleur pour la catégorie
 					$sqlCouleur="SELECT * FROM categorie WHERE catID = ".$dataRDV['rdvIDCategorie'];
 					$resultatCouleur=mysqli_query($bd, $sqlCouleur) or fd_db_err($sqlCouleur);
 					$dataCouleur=mysqli_fetch_assoc($resultatCouleur);
 					if(($dataRDV['rdvHeureDebut']>=($dataSuivi['utiHeureMin']*100))&&($dataRDV['rdvHeureFin']<=($dataSuivi['utiHeureMax']*100))){
-						// Determination de la taille de l'évenement (41px=1h -2px pour les bordure)
 						$height=(($dataRDV['rdvHeureFin']-$dataRDV['rdvHeureDebut'])/100)*39;
-						// Determination de la hauteur à laquel on place le rendez-vous(41px=1h)
-						$top=53+(($dataRDV['rdvHeureDebut']-($dataSuivi['utiHeureMin']*100))/100)*41;
+						$top=53+(($dataRDV['rdvHeureDebut']-($dataRDV['utiHeureMin']*100))/100)*41;
 						if($idSuivi!=$_SESSION['id']){
 							$lien='#';
 						}
 						else{
 							$lien="rendezvous.php?jour=".$jour."&mois=".$mois."&annee=".$annee."&rdvID=".$dataRDV['rdvID'];
 						}
-						// On verifie qu'on affiche que les catégorie publique des autres  utilisateurs 
 						if(($dataCouleur['catPublic']!=0)||($idSuivi==$_SESSION['id'])){
 							echo'<a style="background-color: #',$dataCouleur['catCouleurFond'],'; border: solid 2px #',$dataCouleur['catCouleurBordure'],'; color: #',couleur_visible($dataCouleur['catCouleurFond']),'; top: ',$top,'px; height: ',$height,'px; wight: 90px;" class="rendezvous" href="',$lien,'">',$dataRDV['rdvLibelle'],'</a>';
 						}

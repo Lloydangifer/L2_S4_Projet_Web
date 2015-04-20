@@ -1,5 +1,16 @@
 <?php
+/** @file
+ * Page de gestion des rendez-vous de l'utilisateur courant de l'application 24sur7
+ *
+ * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
+ * @author : Sammy Loudiyi - sammy.loudiyi@edu.univ-fcomte.fr
+ *
+ */
 include('bibli_24sur7.php');
+/**
+ * Fonction permettant de modifier un rendez-vous déjà existant dans la base de données
+ * 
+ */
 function lsvml_modifier_rendezvous(){
 	echo'<p><strong>Nouvelle saisie</strong></p>',
 		'<hr>',
@@ -18,6 +29,10 @@ function lsvml_modifier_rendezvous(){
         '<p><a href="javascript:history.back()">Retour à l\'agenda</a></p>',
         '</form>';
 }
+/**
+ * Fonction permettant d'ajouter un nouveau rendez-vous à l'utilisateur courant
+ * 
+ */
 function lsvml_nouveau_rendezvous(){
 	echo	'<p><strong>Nouvelle saisie</strong></p>',
 			'<hr>',

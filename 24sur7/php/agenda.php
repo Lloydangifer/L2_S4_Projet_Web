@@ -12,7 +12,7 @@ lsvm_html_head('24sur7 | Agenda');
 lsvm_html_bandeau(APP_PAGE_AGENDA);
 echo '<section id="bcContenu">',
 		'<aside id="bcGauche">';
-lsvm_html_calendrier($jour,$mois,$annee);
+			lsvm_html_calendrier($jour,$mois,$annee);
 echo		'<section id="categories">';
 				lsvm_html_categories($_SESSION['nom'],$_SESSION['id'],$lsvm_db_req);
 echo		'</section>',

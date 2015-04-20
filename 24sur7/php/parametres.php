@@ -1,4 +1,11 @@
 <?php
+/** @file
+ * Page de gestion des paramètres de l'utilisateur courant de l'application 24sur7
+ *
+ * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
+ * @author : Sammy Loudiyi - sammy.loudiyi@edu.univ-fcomte.fr
+ *
+ */
 include('bibli_24sur7.php');
 ob_start();
 session_start();
