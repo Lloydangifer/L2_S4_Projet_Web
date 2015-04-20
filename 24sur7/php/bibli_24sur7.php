@@ -6,15 +6,16 @@
 	define('APP_PAGE_PARAMETRES', "Parametres.php");
 //Constante connexion Base de Données
 	define ('APP_BD_URL', "localhost");
-	define ('APP_BD_USER', "u_24sur7");
-	define ('APP_BD_PASS', "p_24sur7");
-	define ('APP_BD_NOM', "24sur7");
+	define ('APP_BD_USER', "u_loudiyi");
+	define ('APP_BD_PASS', "p_loudiyi");
+	define ('APP_BD_NOM', "24sur7_loudiyi");
 //Constante type de zone de saisie
 	define ('APP_Z_TEXT', "text");
 	define ('APP_Z_PASS', "password");
 	define ('APP_Z_SUBMIT', "submit");
 	define ('APP_Z_RESET', "reset");
 	define ('APP_Z_SEARCH', "search");
+	define('APP_Z_HIDDEN','hidden');
 //Constante de la phase de test
 	define('APP_TEST', FALSE);
 	

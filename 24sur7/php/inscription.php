@@ -1,5 +1,19 @@
 <?php 
+/** @file
+ * Page de d'inscription de l'application 24sur7
+ *
+ * Inscrit l'utilisateur à l'application
+ *
+ * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
+ * @author : Sammy Loudiyi - sammy.loudiyi@edu.univ-fcomte.fr
+ *
+ */
 include('bibli_24sur7.php');
+	/**
+	 * Fonction d'inscription
+	 *
+	 * Vérifie les erreurs de saisie. Inscrit un utilisateur, le connecte et Renvoie sur Agenda.php. Pas de paramètre
+	 */
 	function  lsvml_add_utilisateur(){
 		$errs = array();
 		$lsvm_db_req=lsvm_db_connexion();
@@ -40,7 +54,7 @@ include('bibli_24sur7.php');
 		$sql="SELECT*
 		FROM utilisateur
 		WHERE utiMail='$txtMail'";
-		$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
+		$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($sql);
 		$num=mysqli_num_rows($result);
 		if($num!=0){ 	
 			$errs['txtMail'] = 'Cette adresse mail est d&eacutej&agrave inscrite';
@@ -83,11 +97,11 @@ include('bibli_24sur7.php');
 			$date=$date_a_act.$date_m_act.$date_j_act;
 			$sqlAjout = "INSERT INTO utilisateur (utiNom, utiMail, utiPasse, utiDateInscription, utiJours, utiHeureMin, utiHeureMax)
 			VALUES('$txtNom', '$txtMail', '$pass', '$date', 127, 6, 22)";
-			$result=mysqli_query($lsvm_db_req,$sqlAjout) or fd_bd_erreur($lsvm_bd);
+			$result=mysqli_query($lsvm_db_req,$sqlAjout) or fd_bd_erreur($sqlAjout);
 			$sql="SELECT utiID
 			FROM utilisateur
 			WHERE utiMail='$txtMail'";
-			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
+			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($sql);
 			if($enr=mysqli_fetch_assoc($result)){	
 				$ID=$enr['utiID'];
 				session_start();
@@ -96,15 +110,18 @@ include('bibli_24sur7.php');
 			}
 			$sqlAjoutCat = "INSERT INTO categorie (catNom, catCouleurFond, catCouleurBordure, catIDUtilisateur, catPublic)
 			VALUES('D&eacute;faut', 'FFFFFF', '000000', '$ID', 0)";
-			$resultCat=mysqli_query($lsvm_db_req,$sqlAjoutCat) or fd_bd_erreur($lsvm_bd);
+			$resultCat=mysqli_query($lsvm_db_req,$sqlAjoutCat) or fd_bd_erreur($sqlAjoutCat);
 			header('Location:./agenda.php');
 			exit();
 		}
 		return $errs;
 	}	
+	//Fonction d'en-tête
 	lsvm_html_head('Application 24sur7|Inscription', '../css/style.css');
+	//Fonction du bandeau
 	lsvm_html_bandeau('none');
 	echo '<section id="bcContenu">';
+	//Affichage des erreurs
 	if(!empty($_POST['btnValider'])){
 		$errs=lsvml_add_utilisateur();
 		if (count($errs)!=0){
@@ -119,11 +136,13 @@ include('bibli_24sur7.php');
 			echo '</p>';
 		}		
 	}else{
+		//Initialisation des variables
 		$_POST['txtNom']="";
 		$_POST['txtMail']="";
 		$_POST['txtPasse']="";
 		$_POST['txtVerif']="";
 	}
+	//Affichage de la page et du formulaire d'inscription
 	echo '<p>Pour vous inscrire &agrave; <strong>24sur7</strong>, veuillez remplir le formulaire ci-dessous.</p>
 		<section id="bcCentreInscription">
 		<form method="POST" action="../php/inscription.php">';

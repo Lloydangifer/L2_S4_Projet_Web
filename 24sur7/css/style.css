@@ -385,7 +385,7 @@ strong {
     width: 104px; 							          
 }
 /* ---------------------------------------------------------------
-	AGENDA
+	AGENDA ET RECHERCHE
 --------------------------------------------------------------- */
 #titreAgenda {
 	text-align: center;
@@ -453,6 +453,41 @@ strong {
 	text-align: center; 
 	color: #FFF;
 	font-size: 14px;
+}
+
+.zoneForm{
+	padding: 3px 0 3px 0;
+}
+
+.tailleZoneSaisie{
+	width : 200px;
+}
+
+.tailleZoneSaisieR{
+	width : 300px;
+	}
+
+.tailleBouton{
+	color: #FFFFFF;
+	border-radius: 5px;
+	background-color: #FFA500;
+}
+
+.btnAbo{
+	float: right;
+	margin-top: -5px;
+}
+
+.resRecherche1{
+	text-align: left;
+	padding: 10px 10px;
+	background-color: #9AC5E7;
+}
+
+.resRecherche2{
+	text-align: left;
+	padding: 10px 10px;
+	background-color: #E5ECF6;
 }
 /* ---------------------------------------------------------------
 	RENDEZ-VOUS

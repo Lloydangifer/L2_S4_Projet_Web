@@ -1,7 +1,23 @@
 <?php 
+/** @file
+ * Page de d'identification de l'application 24sur7
+ *
+ * Connecte l'utilisateur à l'application
+ *
+ * @author : Virgil Manrique - virgil.manrique@edu.univ-fcomte.fr
+ * @author : Sammy Loudiyi - sammy.loudiyi@edu.univ-fcomte.fr
+ *
+ */
 include ('bibli_24sur7.php');
+/**
+ * Fonction de login
+ *
+ * Connecte l'utilisateur et ouvre une session. Renvoie sur Agenda.php. Pas de paramètre
+ */
 function  lsvml_login_utilisateur(){
+	//Se connecte à la base de donnée
 	$lsvm_db_req=lsvm_db_connexion();
+	//Créer un tableau d'erreur. Vérifie les différentes erreurs possibles.
 	$errs = array();
 		if(isset($_POST['txtMail'])){
 			$txtMail = trim($_POST['txtMail']);
@@ -26,7 +42,7 @@ function  lsvml_login_utilisateur(){
 			$sql="SELECT*
 			FROM utilisateur
 			WHERE utiMail='$txtMail'";
-			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
+			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($sql);
 			$num=mysqli_num_rows($result);
 			if($num==0){ 	
 				$errs['txtMail'] = 'Cette adresse mail n\'existe pas';
@@ -40,11 +56,12 @@ function  lsvml_login_utilisateur(){
 				}
 			}
 		}
+		//S'il n'y a pas d'erreur, ouvre une session et renvoie sur agenda.php
 		if(count($errs)==0){
 		$sql="SELECT *
 			FROM utilisateur
 			WHERE utiMail='$txtMail'";
-			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($lsvm_bd);
+			$result=mysqli_query($lsvm_db_req,$sql) or fd_bd_erreur($sql);
 			if($enr=mysqli_fetch_assoc($result)){	
 				$ID=$enr['utiID'];
 				$nom=$enr['utiNom'];
@@ -57,9 +74,12 @@ function  lsvml_login_utilisateur(){
 		}
 		return $errs;
 	}	
+	//Fonction d'en-tête
 	lsvm_html_head('Application 24sur7|Inscription', '../css/style.css');
+	//Fonction du bandeau
 	lsvm_html_bandeau('none');
 	echo '<section id="bcContenu">';
+	//Affichage des erreurs
 	if(!empty($_POST['btnValider'])){
 		$errs=lsvml_login_utilisateur();
 		if (count($errs)!=0){
@@ -74,9 +94,11 @@ function  lsvml_login_utilisateur(){
 			echo '</p>';
 		}		
 	}else{
+		//Initialisation des variables
 		$_POST['txtMail']="";
 		$_POST['txtPasse']="";
 	}
+	//Affichage de la page et du formulaire de connection
 	echo '<p>Pour vous connecter, veuillez vous identifiez.</p>
 		<section id="bcCentreIdentification">
 		<form method="POST" action="../php/identification.php">';
